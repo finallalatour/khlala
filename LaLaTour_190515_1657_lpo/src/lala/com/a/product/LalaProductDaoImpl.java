@@ -41,8 +41,9 @@ public class LalaProductDaoImpl implements LalaProductDao {
 
 	//제품전체목록
 	@Override
-	public List<ProductDto> getProductList() {
-		return sqlSession.selectList(ns+"getProductList");
+	public List<ProductDto> getProductList(PagingBean pagingBean) {
+		System.out.println("impl dto: " + pagingBean.toString());
+		return sqlSession.selectList(ns+"getProductList", pagingBean);
 	}
 
 	//디테일
@@ -132,6 +133,26 @@ public class LalaProductDaoImpl implements LalaProductDao {
 		// 제품수정
 		int n = sqlSession.update(ns+"productUpdateAf", dto);
 		return n>0? true:false;
+	}
+
+	@Override
+	public boolean updateProductPCount(CartDto dto) {
+		// 주문결제 후 주문된 물품수량만큼 원본물품의 재고를 수정
+		int n = sqlSession.update(ns+"updateProductPCount", dto);
+		return n>0? true:false;
+	}
+
+	@Override
+	public boolean deleteCart(int seq) {
+		// 장바구니 선택물품 삭제
+		int n = sqlSession.delete(ns+"deleteCart", seq);
+		return n>0? true:false;
+	}
+
+	@Override
+	public int getProductTotalCount(PagingBean pagingBean) {
+		// 제품전체목록 수 (페이징 때문에 필요)
+		return sqlSession.selectOne(ns+"getProductTotalCount", pagingBean);
 	}
 	
 	

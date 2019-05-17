@@ -54,10 +54,53 @@ DELETE FROM FILEPDS
 WHERE SEQ=#{seq}
 </delete>
 
-<!-- 전체목록 -->
-<select id="getProductList" resultType="lala.com.a.model.ProductDto">
+<!-- 제품전체목록 -->
+<!-- <select id="getProductList" parameterType="lala.com.a.product.PagingBean" resultType="lala.com.a.model.ProductDto">
 SELECT *
 FROM PRODUCT
+WHERE 1=1
+<if test="findWord!=null and findWord!=''">
+	<if test="choice=='title'">
+		AND TITLE LIKE '%'||#{findWord}||'%'
+	</if>
+</if>
+ORDER BY SEQ DESC
+</select> -->
+
+<!-- 제품전체목록 -->
+<select id="getProductList" parameterType="lala.com.a.product.PagingBean" resultType="lala.com.a.model.ProductDto">
+SELECT * FROM (
+	SELECT * FROM (
+		SELECT SEQ,ID,TITLE,CONTENT,PCOUNT,PRICE,PLACE,THUMBNAIL,FSEQ,WDATE,DEL,TNAME
+		FROM PRODUCT
+		WHERE 1=1
+		<if test="findWord!=null and findWord!=''">
+			<if test="choice=='title'">
+				AND TITLE LIKE '%'||#{findWord}||'%'
+			</if>
+		</if>
+		ORDER BY SEQ ASC)
+	<![CDATA[	
+	WHERE ROWNUM<=#{startNum}
+	]]>
+	ORDER BY SEQ DESC)
+<![CDATA[	
+WHERE ROWNUM<=#{countPerPage}
+]]>
+ORDER BY SEQ DESC
+
+</select>
+
+<!-- 제품전체목록 글의총갯수 -->
+<select id="getProductTotalCount" parameterType="lala.com.a.product.PagingBean" resultType="java.lang.Integer">
+SELECT NVL(COUNT(*),0) AS CNT
+FROM PRODUCT
+WHERE 1=1
+<if test="findWord!=null and findWord!=''">
+	<if test="choice=='title'">
+		AND TITLE LIKE '%'||#{findWord}||'%'
+	</if>
+</if>
 ORDER BY SEQ DESC
 </select>
 
@@ -141,6 +184,19 @@ SELECT *
 FROM FESTIVAL
 WHERE SEQ=#{seq}
 </select>
+
+<!-- 주문결제 후 주문된 물품수량만큼 원본물품의 재고를 수정 -->
+<update id="updateProductPCount" parameterType="lala.com.a.model.CartDto">
+UPDATE PRODUCT
+SET PCOUNT=PCOUNT-#{myCount}
+WHERE SEQ=#{pseq}
+</update>
+
+<!-- 장바구니 물건 삭제 -->
+<delete id="deleteCart" parameterType="java.lang.Integer">
+DELETE FROM CART
+WHERE SEQ=#{seq}
+</delete>
 
 </mapper>
 

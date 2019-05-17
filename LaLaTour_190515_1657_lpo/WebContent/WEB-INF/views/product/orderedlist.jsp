@@ -14,6 +14,7 @@
 <div style="width: 1500px;">
 <form method="post" id="_finalForm">
 <input type="hidden" name="inseq" id="_inseq" value="3">
+<input type="hidden" name="merchant_uid" id="_merchant_uid" value="">
 <table border="1">
 <colgroup>
 	<col width="300px"><col width="600px">
@@ -54,7 +55,7 @@
 	<td colspan="5" style="text-align: right;">
 		결제금액: 
 		<input type="text" id="_otprice" name="otprice" style="border: 0px none; text-align: right;">원
-		<button type="button" id="_finalBtn" onclick="pay()">결제하기</button>
+		<button type="button" id="_finalBtn" onclick="pay2()">결제하기</button>
 	</td>
 </tr>
 </tbody>
@@ -294,6 +295,7 @@ function pay() {
    			alert("ajax send seq: " + seq);
    			$("#_inseq").val(seq);
    			alert("before finalForm submit()");
+   			//$("#_merchant_uid").val( merchant_uid );
    			$("#_finalForm").attr("action", "changecart.do").submit();
    		},
    		error: function(x, s, e) {
@@ -391,9 +393,10 @@ function pay2() {
 	    		success: function( seq ) {
 	    			//alert("success");
 	    			alert("ajax send seq: " + seq);
-	    			$("#_inseq").val(seq);
-	    			alert("before finalForm submit()");
-	    			$("#_finalForm").attr("action", "changecart.do").submit();
+	       			$("#_inseq").val(seq);
+	       			alert("before finalForm submit()");
+	       			//$("#_merchant_uid").val( merchant_uid );
+	       			$("#_finalForm").attr("action", "changecart.do").submit();
 	    		},
 	    		error: function(x, s, e) {
 	    			alert("error");

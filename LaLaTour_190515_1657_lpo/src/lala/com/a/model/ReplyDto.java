@@ -19,7 +19,7 @@ public class ReplyDto extends MemberDto implements Serializable {
 	}
 	
 	
-	
+	 
 	public ReplyDto(int seq, String id) {
 		super();
 		this.seq = seq;

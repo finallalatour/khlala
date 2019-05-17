@@ -20,10 +20,10 @@
 <div id="div_root">
 
 <div id="div_detail_top" style="width: 1500px; display: inline-block;">
-<div id="div_pic_wrap" style="width: 600px; height: 750px; float:left; /* background-color: red; */">
+<div id="div_pic_wrap" style="width: 600px; height: 550px; float:left; /* background-color: red; */">
 	<div id="div_pic" style="padding-bottom: 20px;">
 		<img alt="" src="<%=request.getContextPath()%>/upload/${fileList[0].fileNameAf}"
-			style="width: 600px; height: 600px;">
+			style="width: 600px; height: 400px;">
 	</div>
 	<div id="div_tn" style="text-align: center;">
 		<input type="hidden" id="slide_index" value="0">
@@ -46,7 +46,7 @@
 	</div>
 </div> <!-- end div_pic_wrap -->
 
-<div id="div_detail_wrap" style="width: 800px; height: 750px; float:right;">
+<div id="div_detail_wrap" style="width: 800px; height: 550px; float:right;">
 	<div id="div_detail_top">
 		<div><h2>${product.title}</h2></div>
 		<table>
@@ -101,7 +101,12 @@
 					<button type="button" class="btn btn-secondary btn-lg" id="_productListBtn" onclick="location.href='productlist.do'">목록으로</button>
 				</c:if>
 				<c:if test="${login.id ne '' and not empty login and login.auth eq '0'}">
-					<button type="button" class="btn btn-primary btn-lg" id="_cartinsertBtn">장바구니 담기</button>
+					<c:if test="${product.pcount eq '0'}">
+						<button type="button" class="btn btn-danger btn-lg" id="_cartinsertBtn" disabled="disabled">일시품절</button>
+					</c:if>
+					<c:if test="${product.pcount > '0'}">
+						<button type="button" class="btn btn-primary btn-lg" id="_cartinsertBtn">장바구니 담기</button>
+					</c:if>
 					<button type="button" class="btn btn-secondary btn-lg" id="_cartlistBtn">장바구니 이동</button>
 				</c:if>
 				<c:if test="${login.id eq '' or empty login}">
@@ -119,8 +124,12 @@
 </div> <!-- end div_content_wrap -->
 
 <div id="div_reply_wrap" style="width: 1500px; display: inline-block; padding: 50px;">
-<h2>상품후기</h2>
-<pre>후기 영역///////////////////////////////</pre>
+<h2>댓글</h2>
+<div>
+댓글쓰기 창 <br> 
+<textarea rows="5" cols="20" name="title"></textarea>
+</div>
+
 </div> <!-- end div_reply_wrap -->
 
 </div> <!-- end div_root -->
@@ -155,10 +164,16 @@ $(document).on("click", "#mBtn", function() {
 	showTotal();
 });
 
+//제품 총 판매수량(남은수량임)
+var pcount = ${product.pcount};
 $(document).on("click", "#pBtn", function() {
 	var val = Number( $("#_myCount").val() );
 	
-	if(val==10) {
+	if( val==pcount ) {
+		alert("현재 재고를 초과할 수 없습니다");
+		return;
+	}
+	else if(val==10) {
 		alert("최대 주문수량은 10입니다");
 		return;
 	}

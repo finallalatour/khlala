@@ -5,10 +5,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <fmt:requestEncoding value="utf-8"/>
 
-<h1>제품등록</h1>
+<h1>제품수정</h1>
 
-<form action="productUpdateAf.do" method="post" enctype="multipart/form-data">
+<form action="productUpdateAf.do" id="_frmUpdate" method="post" enctype="multipart/form-data">
 <input type="hidden" name="seq" value="${product.seq}">
+
 <table border="1">
 <colgroup>
 	<col width="25%"><col width="75%">
@@ -17,7 +18,7 @@
 <tbody>
 <tr>
 	<th>ID</th>
-	<td><input type="text" name="id" value="${product.id}"></td>
+	<td><input type="text" name="id" value="${product.id}" readonly="readonly"></td>
 </tr>
 <tr>
 	<th>제목</th>
@@ -43,7 +44,23 @@
 </tr>
 <tr>
 	<th>원산지</th>
-	<td><input type="text" name="place" id="_place" value="${product.place}"></td>
+	<%-- <td><input type="text" name="place" id="_place" value="${product.place}"></td> --%>
+	<td>
+	<input type="text" name="place" id="_place" value="${product.place}" readonly="readonly">
+	<input type="button" id="_backBtn" value="변경취소" onclick="placeBack()" style="display: none;">
+	<br><hr>
+	<select name="place1" id="_place1">
+		<option value="서울특별시" selected="selected">서울특별시</option>
+        <option value="경기도">경기도</option>
+        <option value="강원도">강원도</option>
+        <option value="충청도">충청도</option>
+        <option value="전라도">전라도</option>
+        <option value="경상도">경상도</option>
+        <option value="제주도">제주도</option>
+	</select><br>
+	상세 주소 : <input type="text" name="place2" id="_place2">
+	<input type="button" id="_cngBtn" value="변경하기" onclick="placeChange()">
+	</td>
 </tr>
 <tr>
 	<th>관련축제</th>
@@ -77,7 +94,7 @@
 <tr>
 	<td colspan="2">
 		<input type="submit" value="제품수정">
-		<input type="button" value="수정취소">
+		<input type="button" value="수정취소" onclick="location.href='productdetail.do?seq=${product.seq}'">
 	</td>
 </tr>
 </tbody>
@@ -89,6 +106,8 @@
 </form>
 
 <script>
+var original_place = $("#_place").val().trim(); 
+
 $("#_festivalBtn").click(function() {
 	if($("#s_keyword").val()=="") {
 		alert("검색어를 입력해야 합니다");
@@ -179,8 +198,75 @@ function delEl(obj) {
 }
 
 function check() {
-	alert("check in");
-	return true;
+	//제목 공백 안돼요
+	var title = $("#_title").val().trim();
+	$("#_title").val(title);
+	if(title=="" || title.length==0) {
+		alert("제목을 입력하세요");
+		return false;
+	}
+	
+	//내용 공백 안돼요
+	var content = $("#_content").val();
+	if(content=="" || content.length==0) {
+		alert("내용을 입력하세요");
+		return false;
+	}
+	
+	//썸네일 등록 확인 (여긴 안해도 될듯)
+	
+	//수량 등록 및 숫자만 썼는지 확인
+	var regPcount = /^[0-9]/g;
+	if( !regPcount.test($("#_pcount").val()) ) {
+		alert("숫자만 입력하세요");
+		return false;
+	}
+	
+	//원산지 체크
+	alert($("#_place1").val());
+	var places = $("#_place2").val().trim();
+	$("#_place2").val(places);
+	if(places=="" || places.length==0) {
+		alert("지역을 입력하세요");
+		return false;
+	}
+	$("#_place").val( $("#_place1").val() + " " + $("#_place2").val() );
+	
+	//다중파일 개수 확인 (10개까지만 허용)
+	var obj = document.getElementsByName("fileload");
+	var flength = 0;
+	for(var i=0; i<obj.length; i++) {
+		flength += obj[i].files.length;
+	}
+	if(flength>10) {
+		alert("파일은 10개까지만 첨부할 수 있습니다.");
+		return false;
+	}
+	
+	//가격 등록 및 숫자만 썼는지 확인
+	var regPrice = /^[0-9]/g;
+	if( !regPrice.test($("#_price").val()) ) {
+		alert("숫자만 입력하세요");
+		return false;
+	}
+	
+	//폼전송 해야한다.
+	$("#_frmUpdate").submit();
+}
+
+function placeChange() {
+	if( $("#_place2").val().trim()=="" ) {
+		alert("지역을 입력하세요");
+		return false;
+	}
+	var cplace = $("#_place1").val().trim() + " " + $("#_place2").val().trim();
+	$("#_place").val( cplace );
+	$("#_backBtn").show();
+}
+
+function placeBack() {
+	$("#_place").val( original_place );
+	$("#_backBtn").hide();
 }
 
 </script>

@@ -9,11 +9,9 @@
     
 <h1>장바구니</h1>
 
-<button onclick="pay()">결제하기</button>
+<div id="totalDiv">
 
-<div>
-
-<div style="width: 1500px;">
+<div id="topDiv" style="width: 1500px;">
 <form method="post" id="_orderForm">
 
 <div id="hcount">
@@ -38,9 +36,10 @@
 <tbody>
 <c:if test="${clist.size() eq '0' or empty clist}">
 	<tr>
-		<td colspan="5">장바구니에 넣은 제품이 없습니다.</td>
+		<td colspan="5">장바구니에 제품이 없습니다.</td>
 	</tr>
 </c:if>
+
 <c:if test="${clist.size() > '0'}">
 <c:forEach items="${clist}" var="item">
 <tr>
@@ -55,17 +54,17 @@
 		<span>
 			<button type="button" id="mBtn" style="float: left;">-</button>
 			<input type="text" id="_myCount" name="myCount" price="${item.price}" value="${item.myCount}" readonly="readonly" style="width:50px; float:left;">
-			<button type="button" id="pBtn" style="float: left;">+</button>
+			<button type="button" id="pBtn" pcount="${item.pcount}" style="float: left;">+</button>
 		</span>
 	</td>
-	<td><button type="button">지우기</button></td>
+	<td><button type="button" onclick="location.href='cartDelete.do?seq=${item.seq}'">지우기</button></td>
 </tr>
 </c:forEach>
 <tr>
 	<td colspan="5" style="text-align: right;">
 		결제예정금액: 
 		<span id="_totalprice">0</span>원
-		<button type="submit" id="_orderBtn">주문하기</button>
+		<button type="button" id="_orderBtn">주문하기</button>
 	</td>
 </tr>
 </c:if>
@@ -73,9 +72,12 @@
 
 </table>
 </form>
-</div>
+</div> <!-- end topDiv -->
 
-</div>
+
+
+</div> <!-- end totalDiv -->
+
 
 <script>
 function chk(obj){
@@ -92,8 +94,15 @@ function chk(obj){
 	$("#_totalprice").append(qq);
 } 
 
+//결제하기 했을 때 선택되어 있는지 검사하고 서브밋
 $(document).on("click", "#_orderBtn", function() {
-	$("#_orderForm").attr("action", "orderedlist.do").submit();
+	if( $("input:checkbox[name=chk_order]:checked").length==0 ) {
+		alert("구매할 제품을 선택해 주세요");
+		return;
+	}
+	else {
+		$("#_orderForm").attr("action", "orderedlist.do").submit();
+	}
 });
 
 $(document).on("click", "#mBtn", function() {
@@ -110,11 +119,17 @@ $(document).on("click", "#mBtn", function() {
 });
 
 $(document).on("click", "#pBtn", function() {
-	var obj = $(this).parent().children("input");
+	var pcount = Number( $(this).attr("pcount") );
 	
+	var obj = $(this).parent().children("input");
+
 	var val = Number( obj.val() );
 	
-	if(val==10) {
+	if(val==pcount) {
+		alert("현재 재고를 초과할 수 없습니다");
+		return;
+	}
+	else if(val==10) {
 		alert("최대 주문수량은 10입니다");
 		return;
 	}
@@ -134,7 +149,6 @@ function showTotal(obj) {
 	
 	tpCal();
 }
-
 
 function tpCal() {
 	//var obj_cb = document.getElementsByName("chk_order");
