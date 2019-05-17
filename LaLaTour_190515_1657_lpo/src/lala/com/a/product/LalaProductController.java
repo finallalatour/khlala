@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lala.com.a.model.CartDto;
 import lala.com.a.model.FestivalDto;
+import lala.com.a.model.GoodsDto;
 import lala.com.a.model.MemberDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
@@ -79,10 +80,10 @@ public class LalaProductController {
 	}
 	
 	@RequestMapping(value="productUpdate.do", method=RequestMethod.GET)
-	public String productUpdate(int seq, Model model) {
+	public String productUpdate(int product_seq, Model model) {
 		logger.info("LalaProductController productUpdate " + new Date());
 		
-		ProductDto dto = lalaProductService.productDetail(seq);
+		ProductDto dto = lalaProductService.productDetail(product_seq);
 		model.addAttribute("product", dto);
 		System.out.println("dto: " + dto.toString());
 		
@@ -96,7 +97,7 @@ public class LalaProductController {
 		}*/
 		model.addAttribute("fName", dto.getFseq()==0? new FestivalDto():lalaProductService.getFestivalName(dto.getFseq()));
 
-		List<FilePdsDto> flist = lalaProductService.getFileList(seq);
+		List<FilePdsDto> flist = lalaProductService.getFileList(product_seq);
 		model.addAttribute("fileList", flist);
 		
 		return "productupdate.tiles";
@@ -141,8 +142,9 @@ public class LalaProductController {
 		}
 		
 		//나머지 다중파일들 업로드
+		int i=0;
 		for (MultipartFile mf : fileload) {
-			
+			System.out.println((++i) + "번째 파일 업로드");
 			if(mf==null || mf.isEmpty()) {
 				continue;
 			}
@@ -204,6 +206,7 @@ public class LalaProductController {
 		return "redirect:/productlist.do";
 	}
 	
+	//이거 안쓰는거 같음. 에러안나면 안쓰는거겠지..
 	@RequestMapping(value="thumbNailDownload.do", method=RequestMethod.GET)
 	public String thumbNailDownload(ProductDto dto, HttpServletRequest req, Model model) {
 		logger.info("LalaProductController thumnNailDownload " + new Date());
@@ -216,27 +219,26 @@ public class LalaProductController {
 		File downloadFile = new File(fupload + "/" + dto.getThumbNail());
 		model.addAttribute("downloadFile", downloadFile);
 		model.addAttribute("thumbNail", dto.getThumbNail());
-		model.addAttribute("seq", dto.getSeq());
+		model.addAttribute("seq", dto.getProduct_seq());
 		
 		return "downloadView";
 	}
 	
 	@RequestMapping(value="productdetail.do", method=RequestMethod.GET)
-	public String productdetail(int seq, Model model) {
+	public String productdetail(int product_seq, Model model) {
 		logger.info("LalaProductController productdetail " + new Date());
 		
-		System.out.println("seq :" + seq);
+		System.out.println("con productdetail start: " + product_seq);
 		
-		ProductDto product = lalaProductService.productDetail(seq);
-		System.out.println("1");
-		List<FilePdsDto> fileList = lalaProductService.getFileList(seq);
-		System.out.println("2");
-		List<ReplyDto> replyList = lalaProductService.getReplyList();
-		System.out.println("3 넘기기직전");
+		ProductDto product = lalaProductService.productDetail(product_seq);
+		List<FilePdsDto> fileList = lalaProductService.getFileList(product_seq);
+		//List<ReplyDto> replyList = lalaProductService.getReplyList();
+		List<GoodsDto> goodsList = lalaProductService.getGoodsList(product_seq);
 		
 		model.addAttribute("product", product);
 		model.addAttribute("fileList", fileList);
-		model.addAttribute("replyList", replyList);
+		//model.addAttribute("replyList", replyList);
+		model.addAttribute("goodsList", goodsList);
 		
 		return "productdetail.tiles";
 	}
@@ -245,7 +247,6 @@ public class LalaProductController {
 	@RequestMapping(value="cartinsert.do", method=RequestMethod.POST)
 	public String cartinsert(CartDto dto) {
 		logger.info("LalaProductController cartinsert " + new Date());
-		System.out.println(dto.toString());
 		
 		//장바구니에 있는지 확인
 		CartDto cdto = lalaProductService.getProductSeq(dto);
@@ -312,7 +313,7 @@ public class LalaProductController {
 		for(int i=0; i<chk_order.length; i++) {
 			System.out.println("seq: " + chk_order[i] + ", count: " + hcount[i]);
 			CartDto dto = new CartDto();
-			dto.setSeq(chk_order[i]);
+			dto.setCart_seq(chk_order[i]);
 			dto.setMyCount(hcount[i]);
 			
 			System.out.println(i + ": " + dto.toString());
@@ -332,15 +333,17 @@ public class LalaProductController {
 	public int orderedinsert(OrderedDto dto) {
 		logger.info("LalaProductController orderedinsert " + new Date());
 		
-		//주문내역 저장 후 해당 seq 받아옴
-		int seq = lalaProductService.orderedInsert(dto);
+		System.out.println("after dto: " + dto.toString());
 		
-		return seq;
+		//주문내역 저장 후 해당 seq 받아옴
+		int ordered_seq = lalaProductService.orderedInsert(dto);
+		
+		return ordered_seq;
 	}
 	
 	//주문결제히면 물품을 장바구니에서 주문내역으로 변경 (oseq 변경) seq장바구니물품의 oseq를 inseq로 변경?? 맞나?
 	@RequestMapping(value="changecart.do", method=RequestMethod.POST)
-	public String changecart(int inseq, String merchant_uid, String[] seq) {
+	public String changecart(int inseq , String merchant_uid, String[] seq) {
 		logger.info("LalaProductController changecart " + new Date());
 		
 		System.out.println("inseq: " + inseq);
@@ -348,7 +351,7 @@ public class LalaProductController {
 		for (String cc : seq) {
 			CartDto dto = new CartDto();
 			int sseq = Integer.parseInt(cc);
-			dto.setSeq(sseq);
+			dto.setCart_seq(sseq);
 			dto.setOseq(inseq);
 			lalaProductService.updateCartOseq(dto);
 			
@@ -433,11 +436,11 @@ public class LalaProductController {
 		//dto.setThumbNail(filethumbnail.getOriginalFilename());
 		lalaProductService.productUpdateAf(dto);
 		
-		return "redirect:/productdetail.do?seq="+dto.getSeq();
+		return "redirect:/productdetail.do?product_seq="+dto.getProduct_seq();
 	}
 	
 	@RequestMapping(value="cartDelete.do", method=RequestMethod.GET)
-	public String cartDelete(int seq, String id, HttpServletRequest req) {
+	public String cartDelete(int cart_seq, String id, HttpServletRequest req) {
 		logger.info("LalaProductController productUpdateAf " + new Date());
 		
 		//String id = ((MemberDto)req.getSession(false).getAttribute("login")).getId();
@@ -445,7 +448,7 @@ public class LalaProductController {
 		//System.out.println("id: " + id);
 		HttpSession session = req.getSession(false);
 		MemberDto dto = (MemberDto)session.getAttribute("login");
-		lalaProductService.deleteCart(seq);
+		lalaProductService.deleteCart(cart_seq);
 		
 		return "redirect:/cartlist.do?id="+dto.getId();
 	}
@@ -457,19 +460,33 @@ public class LalaProductController {
 		System.out.println("c rdto: " + dto.toString());
 		boolean isS = lalaProductService.insertReply(dto);
 		
-		return "redirect:/productdetail.do?seq="+dto.getPseq();
+		return "redirect:/productdetail.do?product_seq="+dto.getPseq();
 	}
 	
+	//과거주문내역 (상품평도 있음)
 	@RequestMapping(value="sellList.do", method=RequestMethod.GET)
-	public String sellList(HttpServletRequest req) {
+	public String sellList(HttpServletRequest req, Model model ) {
 		logger.info("LalaProductController replyInsert " + new Date());
-		System.out.println("1111111111111111111111111111111");
 		
 		HttpSession session = req.getSession(false);
 		MemberDto login = (MemberDto)session.getAttribute("login");
-		System.out.println("con login: " + login.toString());
+		//System.out.println("con login: " + login.toString());
 		
-		return "";
+		List<OrderedDto> selllist = lalaProductService.getSellList(login.getId());
+		model.addAttribute("selllist", selllist);
+		
+		return "selllist.tiles";
+	}
+	
+	//과거주문내역 - 특정주문번호
+	@RequestMapping(value="getOrderSList.do", method=RequestMethod.GET)
+	public String getOrderSList(String omid, Model model) {
+		logger.info("LalaProductController getOrderSList " + new Date());
+		
+		List<OrderedDto> oslist = lalaProductService.getOrderSList(omid);
+		model.addAttribute("oslist", oslist);
+		
+		return "oslist.tiles";
 	}
 	
 	@RequestMapping(value="deleteCart.do", method=RequestMethod.POST)
@@ -478,11 +495,33 @@ public class LalaProductController {
 		
 		String id = ((MemberDto)req.getSession(false).getAttribute("login")).getId();
 		
-		for (int seq : chk_order) {
-			lalaProductService.deleteCart(seq);
+		for (int cart_seq : chk_order) {
+			lalaProductService.deleteCart(cart_seq);
 		}
 		
 		return "redirect:/cartlist.do";
+	}
+	
+	//상품평 입력창으로 이동
+	@RequestMapping(value="insertGoods.do", method=RequestMethod.GET)
+	public String insertGoods(int product_seq, Model model) {
+		logger.info("LalaProductController deleteCart " + new Date());
+		
+		ProductDto dto = lalaProductService.productDetail(product_seq);
+		model.addAttribute("product", dto);
+		
+		return "insertgoods.tiles";
+	}
+	
+	//상품평 입력작업 후 해당 제품페이지로 이동
+	@RequestMapping(value="insertGoodsAf.do", method=RequestMethod.POST)
+	public String insertGoodsAf(GoodsDto dto) {
+		logger.info("LalaProductController insertGoodsAf " + new Date());
+		
+		System.out.println("con iga dto: " + dto.toString());
+		boolean isS = lalaProductService.insertGoodsAf(dto);
+		
+		return "redirect:/productdetail.do?product_seq="+dto.getGpseq();
 	}
 }
 

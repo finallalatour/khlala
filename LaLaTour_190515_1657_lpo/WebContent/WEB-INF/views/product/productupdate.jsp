@@ -8,7 +8,7 @@
 <h1>제품수정</h1>
 
 <form action="productUpdateAf.do" id="_frmUpdate" method="post" enctype="multipart/form-data">
-<input type="hidden" name="seq" value="${product.seq}">
+<input type="hidden" name="product_seq" value="${product.product_seq}">
 
 <table border="1">
 <colgroup>
@@ -23,6 +23,10 @@
 <tr>
 	<th>제목</th>
 	<td><input type="text" name="title" id="_title" value="${product.title}"></td>
+</tr>
+<tr>
+	<th>단위수량</th>
+	<td><input type="text" name="subtitle" id="_subtitle" value="${product.subtitle}"></td>
 </tr>
 <tr>
 	<th>내용</th>
@@ -94,7 +98,7 @@
 <tr>
 	<td colspan="2">
 		<input type="submit" value="제품수정">
-		<input type="button" value="수정취소" onclick="location.href='productdetail.do?seq=${product.seq}'">
+		<input type="button" value="수정취소" onclick="location.href='productdetail.do?product_seq=${product.product_seq}'">
 	</td>
 </tr>
 </tbody>
@@ -203,6 +207,14 @@ function check() {
 	$("#_title").val(title);
 	if(title=="" || title.length==0) {
 		alert("제목을 입력하세요");
+		return false;
+	}
+	
+	//단위수량 공백 안돼요
+	var subtitle = $("#_subtitle").val().trim();
+	$("#_subtitle").val(subtitle);
+	if(subtitle=="" || subtitle.length==0) {
+		alert("단위수량을 입력하세요");
 		return false;
 	}
 	

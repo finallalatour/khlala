@@ -55,6 +55,10 @@
 		</colgroup>
 		
 		<tr>
+			<th>단위수량</th>
+			<td>${product.subtitle}</td>
+		</tr>
+		<tr>
 			<th>판매가</th>
 			<td>${product.price}원</td>
 		</tr>
@@ -97,7 +101,7 @@
 			</div>
 			<div>
 				<c:if test="${login.auth eq '1'}">
-					<button type="button" class="btn btn-primary btn-lg" id="_productUpdateBtn" onclick="location.href='productUpdate.do?seq=${product.seq}'">수정하기</button>
+					<button type="button" class="btn btn-primary btn-lg" id="_productUpdateBtn" onclick="location.href='productUpdate.do?product_seq=${product.product_seq}'">수정하기</button>
 					<button type="button" class="btn btn-secondary btn-lg" id="_productListBtn" onclick="location.href='productlist.do'">목록으로</button>
 				</c:if>
 				<c:if test="${login.id ne '' and not empty login and login.auth eq '0'}">
@@ -122,6 +126,30 @@
 <h2>상품상세정보</h2>
 <pre>${product.content}</pre>
 </div> <!-- end div_content_wrap -->
+
+<div id="div_goods_wrap" style="width: 1500px; display: inline-block; padding: 50px;">
+<h2>고객상품평</h2>
+<c:if test="${goodsList.size() eq '0'}">
+등록된 상품평이 없습니다
+</c:if>
+<c:if test="${goodsList.size() > '1' }">
+<table border="1">
+<colgroup>
+	<col width="300px"><col width="600px"><col width="300px"><col width="300px">
+</colgroup>
+<c:forEach items="${goodsList}" var="goods">
+<tr>
+	<td>
+		${goods.gpoint}
+	</td>
+	<td>${goods.gcontent}</td>
+	<td>${goods.gid}</td>
+	<td>${goods.gdate}</td>
+</tr>
+</c:forEach>
+</table>
+</c:if>
+</div> <!-- end div_goods_wrap -->
 
 <!-- 댓글 입력창 div -->
 <%-- 
@@ -180,7 +208,7 @@
 </div> <!-- end div_root -->
 
 <form id="cartForm" action="cartinsert.do" method="post">
-	<input type="hidden" name="pseq" value="${product.seq}">
+	<input type="hidden" name="pseq" value="${product.product_seq}">
 	<input type="hidden" id="myCount" name="myCount">
 	<input type="hidden" name="id" value="${login.id}">
 </form>
@@ -252,6 +280,7 @@ $(document).on("click", "#_cartlistBtn", function() {
 $(document).on("click", "#_rightBtn", function() {
 	//이전 시작값 가져오기
 	var num = Number($("#slide_index").val());
+	//alert(num);
 	
 	if( (num+3)>=images ) {
 		return;

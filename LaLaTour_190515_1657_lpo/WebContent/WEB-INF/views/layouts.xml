@@ -73,6 +73,21 @@
 	<put-attribute name="main" value="/WEB-INF/views/product/orderedlist.jsp"/>
 </definition>
 
+<!-- selllist 화면 (과거주문내역) -->
+<definition name="selllist.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/selllist.jsp"/>
+</definition>
+
+<!-- oslist 화면 (과거주문내역 - 특정주문번호) -->
+<definition name="oslist.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/oslist.jsp"/>
+</definition>
+
+<!-- insertgoods 화면 (상품평 쓰는 화면) -->
+<definition name="insertgoods.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/insertgoods.jsp"/>
+</definition>
+
 
 <!-- <definition name="memberFind.tiles" extends="mainpage.tiles">
 <put-attribute name="main" value="/WEB-INF/views/member/memberFind.jsp"/>

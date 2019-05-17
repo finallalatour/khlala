@@ -2,9 +2,9 @@ package lala.com.a.model;
 
 import java.io.Serializable;
 
-public class OrderedDto implements Serializable {
+public class OrderedDto extends CartDto implements Serializable {
 
-	private int seq;
+	private int ordered_seq;
 	private String oid;
 	private String oname;
 	private String ophone;
@@ -15,10 +15,10 @@ public class OrderedDto implements Serializable {
 	
 	public OrderedDto() {}
 
-	public OrderedDto(int seq, String oid, String oname, String ophone, String oaddress, String odate, int otprice,
-			String omid) {
+	public OrderedDto(int ordered_seq, String oid, String oname, String ophone, String oaddress, String odate,
+			int otprice, String omid) {
 		super();
-		this.seq = seq;
+		this.ordered_seq = ordered_seq;
 		this.oid = oid;
 		this.oname = oname;
 		this.ophone = ophone;
@@ -28,12 +28,12 @@ public class OrderedDto implements Serializable {
 		this.omid = omid;
 	}
 
-	public int getSeq() {
-		return seq;
+	public int getOrdered_seq() {
+		return ordered_seq;
 	}
 
-	public void setSeq(int seq) {
-		this.seq = seq;
+	public void setOrdered_seq(int ordered_seq) {
+		this.ordered_seq = ordered_seq;
 	}
 
 	public String getOid() {
@@ -94,7 +94,7 @@ public class OrderedDto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "OrderedDto [seq=" + seq + ", oid=" + oid + ", oname=" + oname + ", ophone=" + ophone + ", oaddress="
-				+ oaddress + ", odate=" + odate + ", otprice=" + otprice + ", omid=" + omid + "]";
+		return "OrderedDto [ordered_seq=" + ordered_seq + ", oid=" + oid + ", oname=" + oname + ", ophone=" + ophone
+				+ ", oaddress=" + oaddress + ", odate=" + odate + ", otprice=" + otprice + ", omid=" + omid + "]";
 	}
 }

@@ -25,6 +25,10 @@
 	<td><input type="text" name="title" id="_title"></td>
 </tr>
 <tr>
+	<th>단위수량</th>
+	<td><input type="text" name="subtitle" id="_subtitle"></td>
+</tr>
+<tr>
 	<th>내용</th>
 	<td>
 		<textarea rows="5" cols="20" name="content" id="_content"></textarea>
@@ -110,7 +114,7 @@ $("#_deleteBtn").click(function() {
 
 //파일입력 버튼 클릭
 $("#faddBtn").on("click", function() {
-	var etag = "<div><input multiple='multiple' type='file' name='fileload' accept='.jpg, .jpeg, .png, .bmp, .gif, .jfif'>";
+	var etag = "<div><input multiple='multiple' type='file' name='fileload' accept='.jpg, .jpeg, .png, .bmp, .gif'>";
 	etag += "<button type='button' onclick='delEl(this)'>취소</button><br></div>";
 	$("#_imageTd").append(etag);
 });
@@ -187,6 +191,14 @@ function check() {
 	$("#_title").val(title);
 	if(title=="" || title.length==0) {
 		alert("제목을 입력하세요");
+		return false;
+	}
+	
+	//단위수량 공백 안돼요
+	var subtitle = $("#_subtitle").val().trim();
+	$("#_subtitle").val(subtitle);
+	if(subtitle=="" || subtitle.length==0) {
+		alert("단위수량을 입력하세요");
 		return false;
 	}
 	

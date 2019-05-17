@@ -13,7 +13,7 @@
 
 <div style="width: 1500px;">
 <form method="post" id="_finalForm">
-<input type="hidden" name="inseq" id="_inseq" value="3">
+<input type="hidden" name="inseq" id="_inomid" value="">
 <input type="hidden" name="merchant_uid" id="_merchant_uid" value="">
 <table border="1">
 <colgroup>
@@ -37,8 +37,8 @@
 		<img src="<%=request.getContextPath()%>/upload/${item.thumbNail}" style="width: 100px; height: 100px;">
 	</td>
 	<td>
-		<a href="productdetail.do?seq=${item.pseq}">${item.title}</a>
-		<input type="hidden" name="seq" value="${item.seq}">
+		<a href="productdetail.do?product_seq=${item.pseq}">${item.title}</a>
+		<input type="hidden" name="seq" value="${item.cart_seq}">
 	</td>
 	<td>
 		<input type="text" id="_myCount" name="myCount" price="${item.price}" value="${item.myCount}" readonly="readonly" style="width:50px; float:left;">
@@ -76,7 +76,7 @@
 
 <tbody>
 <tr>
-	<th>주문자 ID</th>
+	<th>주문자 정보</th>
 	<td>
 		${login.id}
 		<input type="hidden" name="oid1" id="oid1" value="${login.id}">
@@ -171,6 +171,7 @@
 	<input type="hidden" name="ophone" id="ophone">
 	<input type="hidden" name="oaddress" id="oaddress">
 	<input type="hidden" name="otprice" id="otprice">
+	<input type="hidden" name="omid" id="omid">
 </form>
 
 <script>
@@ -378,9 +379,13 @@ function pay2() {
 	}, function(rsp) {
 	    if ( rsp.success ) {
 	    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+	    	$("#omid").val( rsp.merchant_uid );
+	    	frms = $("#_frmFinal").serialize();
+	    	
 	    	jQuery.ajax({
 	    		type: "POST",
 	    		url: "orderedinsert.do",
+	    		//data: frms,
 	    		data: frms,
 	    		
 	    		//url: "/payments/complete", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
@@ -390,10 +395,10 @@ function pay2() {
 		    		imp_uid : rsp.imp_uid
 		    		//기타 필요한 데이터가 있으면 추가 전달
 	    		} */
-	    		success: function( seq ) {
+	    		success: function( omid ) {
 	    			//alert("success");
-	    			alert("ajax send seq: " + seq);
-	       			$("#_inseq").val(seq);
+	    			alert("ajax send seq: " + omid);
+	       			$("#_inomid").val(omid);
 	       			alert("before finalForm submit()");
 	       			//$("#_merchant_uid").val( merchant_uid );
 	       			$("#_finalForm").attr("action", "changecart.do").submit();

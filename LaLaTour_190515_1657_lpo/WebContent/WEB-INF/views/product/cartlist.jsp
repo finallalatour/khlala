@@ -43,9 +43,9 @@
 <c:if test="${clist.size() > '0'}">
 <c:forEach items="${clist}" var="item">
 <tr>
-	<td><input type="checkbox" name="chk_order" value="${item.seq}"></td>
+	<td><input type="checkbox" name="chk_order" value="${item.cart_seq}"></td>
 	<td><img src="<%=request.getContextPath()%>/upload/${item.thumbNail}" style="width: 100px; height: 100px;"></td>
-	<td><a href="productdetail.do?seq=${item.pseq}">${item.title}</a></td>
+	<td><a href="productdetail.do?product_seq=${item.pseq}">${item.title}</a></td>
 	<td>
 		<span class="total">
 			<c:set var="tprice" value="${item.myCount * item.price}"/>
@@ -57,7 +57,7 @@
 			<button type="button" id="pBtn" pcount="${item.pcount}" style="float: left;">+</button>
 		</span>
 	</td>
-	<td><button type="button" onclick="location.href='cartDelete.do?seq=${item.seq}'">지우기</button></td>
+	<td><button type="button" onclick="location.href='cartDelete.do?cart_seq=${item.cart_seq}'">지우기</button></td>
 </tr>
 </c:forEach>
 <tr>

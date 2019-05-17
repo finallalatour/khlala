@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CartDto extends ProductDto implements Serializable {
 
-	private int seq;
+	private int cart_seq;
 	private int pseq; //제품글 seq
 	private String id; //누구 장바구니냐
 	private int myCount; //몇개 선택했나
@@ -12,21 +12,21 @@ public class CartDto extends ProductDto implements Serializable {
 	
 	public CartDto() {}
 
-	public CartDto(int seq, int pseq, String id, int myCount, int oseq) {
+	public CartDto(int cart_seq, int pseq, String id, int myCount, int oseq) {
 		super();
-		this.seq = seq;
+		this.cart_seq = cart_seq;
 		this.pseq = pseq;
 		this.id = id;
 		this.myCount = myCount;
 		this.oseq = oseq;
 	}
 
-	public int getSeq() {
-		return seq;
+	public int getCart_seq() {
+		return cart_seq;
 	}
 
-	public void setSeq(int seq) {
-		this.seq = seq;
+	public void setCart_seq(int cart_seq) {
+		this.cart_seq = cart_seq;
 	}
 
 	public int getPseq() {
@@ -63,7 +63,7 @@ public class CartDto extends ProductDto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CartDto [seq=" + seq + ", pseq=" + pseq + ", id=" + id + ", myCount=" + myCount + ", oseq=" + oseq
-				+ "]";
+		return "CartDto [cart_seq=" + cart_seq + ", pseq=" + pseq + ", id=" + id + ", myCount=" + myCount + ", oseq="
+				+ oseq + "]";
 	}
 }

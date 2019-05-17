@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import lala.com.a.model.CartDto;
 import lala.com.a.model.FestivalDto;
+import lala.com.a.model.GoodsDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
 import lala.com.a.model.ReplyDto;
@@ -45,8 +46,8 @@ public class LalaProductServiceImpl implements LalaProductService {
 
 	//디테일
 	@Override
-	public ProductDto productDetail(int seq) {
-		return lalaProductDao.productDetail(seq);
+	public ProductDto productDetail(int product_seq) {
+		return lalaProductDao.productDetail(product_seq);
 	}
 
 	//파일리스트
@@ -116,11 +117,11 @@ public class LalaProductServiceImpl implements LalaProductService {
 	}
 
 	@Override
-	public boolean updateProductPCount(int seq) {
+	public boolean updateProductPCount(int product_seq) {
 		// 주문결제 후 주문된 물품수량만큼 원본물품의 재고를 수정
 		
 		//1. seq로 dto 뽑기
-		CartDto dto = lalaProductDao.getCart(seq);
+		CartDto dto = lalaProductDao.getCart(product_seq);
 		System.out.println("uppc ser: " + dto.toString());
 		
 		//2. cart에 담긴 원본물품seq, 장바구니의 수량myCount로 product의 수량을 수정
@@ -130,9 +131,9 @@ public class LalaProductServiceImpl implements LalaProductService {
 	}
 
 	@Override
-	public boolean deleteCart(int seq) {
+	public boolean deleteCart(int product_seq) {
 		// 장바구니 선택물품 삭제
-		return lalaProductDao.deleteCart(seq);
+		return lalaProductDao.deleteCart(product_seq);
 	}
 
 	@Override
@@ -151,6 +152,30 @@ public class LalaProductServiceImpl implements LalaProductService {
 	public List<ReplyDto> getReplyList() {
 		// 댓글목록
 		return lalaProductDao.getReplyList();
+	}
+
+	@Override
+	public List<OrderedDto> getSellList(String id) {
+		// 과거 주문내역
+		return lalaProductDao.getSellList(id);
+	}
+
+	@Override
+	public List<OrderedDto> getOrderSList(String omid) {
+		// 내역리스트 - 특정주문번호
+		return lalaProductDao.getOrderSList(omid);
+	}
+
+	@Override
+	public boolean insertGoodsAf(GoodsDto dto) {
+		// 상품평 입력
+		return lalaProductDao.insertGoodsAf(dto);
+	}
+
+	@Override
+	public List<GoodsDto> getGoodsList(int gpseq) {
+		// 상품평목록
+		return lalaProductDao.getGoodsList(gpseq);
 	}
 }
 

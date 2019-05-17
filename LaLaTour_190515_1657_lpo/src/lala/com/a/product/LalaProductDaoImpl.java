@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import lala.com.a.model.CartDto;
 import lala.com.a.model.FestivalDto;
+import lala.com.a.model.GoodsDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
 import lala.com.a.model.ReplyDto;
@@ -49,14 +50,14 @@ public class LalaProductDaoImpl implements LalaProductDao {
 
 	//디테일
 	@Override
-	public ProductDto productDetail(int seq) {
-		return sqlSession.selectOne(ns+"productDetail", seq);
+	public ProductDto productDetail(int product_seq) {
+		return sqlSession.selectOne(ns+"productDetail", product_seq);
 	}
 
 	//파일리스트
 	@Override
-	public List<FilePdsDto> getFileList(int seq) {
-		return sqlSession.selectList(ns+"getFileList", seq);
+	public List<FilePdsDto> getFileList(int product_seq) {
+		return sqlSession.selectList(ns+"getFileList", product_seq);
 	}
 
 	//장바구니에 넣기
@@ -90,9 +91,9 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	}
 
 	@Override
-	public CartDto getCart(int seq) {
+	public CartDto getCart(int cart_seq) {
 		// 주문의 제품dto 하나씩 가져오기
-		return sqlSession.selectOne(ns+"getCart", seq);
+		return sqlSession.selectOne(ns+"getCart", cart_seq);
 	}
 
 	@Override
@@ -105,9 +106,9 @@ public class LalaProductDaoImpl implements LalaProductDao {
 		//odto.setSeq(sqlSession.insert(ns+"orderedInsert", dto));
 		//int seq = sqlSession.insert(ns+"orderedInsert", dto);
 		sqlSession.insert(ns+"orderedInsert", dto);
-		System.out.println("dao impl return seq: " + dto.getSeq());
+		System.out.println("dao impl return seq: " + dto.getOrdered_seq());
 		
-		return dto.getSeq();
+		return dto.getOrdered_seq();
 	}
 
 	@Override
@@ -144,9 +145,9 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	}
 
 	@Override
-	public boolean deleteCart(int seq) {
+	public boolean deleteCart(int cart_seq) {
 		// 장바구니 선택물품 삭제
-		int n = sqlSession.delete(ns+"deleteCart", seq);
+		int n = sqlSession.delete(ns+"deleteCart", cart_seq);
 		return n>0? true:false;
 	}
 
@@ -167,6 +168,31 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	public List<ReplyDto> getReplyList() {
 		// 댓글목록
 		return sqlSession.selectList(ns+"getReplyList");
+	}
+
+	@Override
+	public List<OrderedDto> getSellList(String id) {
+		// 과거 주문내역
+		return sqlSession.selectList(ns+"getSellList", id);
+	}
+
+	@Override
+	public List<OrderedDto> getOrderSList(String omid) {
+		// 내역리스트 - 특정주문번호
+		return sqlSession.selectList(ns+"getOrderSList", omid);
+	}
+
+	@Override
+	public boolean insertGoodsAf(GoodsDto dto) {
+		// 상품평 입력
+		int n = sqlSession.insert(ns+"insertGoodsAf", dto);
+		return n>0? true:false;
+	}
+
+	@Override
+	public List<GoodsDto> getGoodsList(int gpseq) {
+		// 상품평목록
+		return sqlSession.selectList(ns+"getGoodsList", gpseq);
 	}
 	
 	

@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 public class ProductDto implements Serializable {
 
-	private int seq;
+	private int product_seq;
 	private String id;
 	private String title;
+	private String subtitle;
 	private String content;
 	
 	private int pcount; //제품수량
@@ -22,12 +23,13 @@ public class ProductDto implements Serializable {
 	
 	public ProductDto() {}
 
-	public ProductDto(int seq, String id, String title, String content, int pcount, int price, String place,
-			String thumbNail, int fseq, String wdate, int del, String tname) {
+	public ProductDto(int product_seq, String id, String title, String subtitle, String content, int pcount, int price,
+			String place, String thumbNail, int fseq, String wdate, int del, String tname) {
 		super();
-		this.seq = seq;
+		this.product_seq = product_seq;
 		this.id = id;
 		this.title = title;
+		this.subtitle = subtitle;
 		this.content = content;
 		this.pcount = pcount;
 		this.price = price;
@@ -39,12 +41,12 @@ public class ProductDto implements Serializable {
 		this.tname = tname;
 	}
 
-	public int getSeq() {
-		return seq;
+	public int getProduct_seq() {
+		return product_seq;
 	}
 
-	public void setSeq(int seq) {
-		this.seq = seq;
+	public void setProduct_seq(int product_seq) {
+		this.product_seq = product_seq;
 	}
 
 	public String getId() {
@@ -61,6 +63,14 @@ public class ProductDto implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
 	}
 
 	public String getContent() {
@@ -137,8 +147,9 @@ public class ProductDto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ProductDto [seq=" + seq + ", id=" + id + ", title=" + title + ", content=" + content + ", pcount="
-				+ pcount + ", price=" + price + ", place=" + place + ", thumbNail=" + thumbNail + ", fseq=" + fseq
-				+ ", wdate=" + wdate + ", del=" + del + ", tname=" + tname + "]";
+		return "ProductDto [product_seq=" + product_seq + ", id=" + id + ", title=" + title + ", subtitle=" + subtitle
+				+ ", content=" + content + ", pcount=" + pcount + ", price=" + price + ", place=" + place
+				+ ", thumbNail=" + thumbNail + ", fseq=" + fseq + ", wdate=" + wdate + ", del=" + del + ", tname="
+				+ tname + "]";
 	}
 }

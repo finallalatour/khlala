@@ -34,7 +34,7 @@ String str = request.getServletContext().getRealPath("/upload");
 <c:if test="${count == '5'}"><c:set var="count" value="1"/></c:if>
 <c:if test="${count == '1'}"><tr></c:if>
 	<td>
-		<div onclick="moveDetail(${product.seq})">
+		<div onclick="moveDetail(${product.product_seq})">
 		<table>
 		<tr>
 			<td>
@@ -44,7 +44,7 @@ String str = request.getServletContext().getRealPath("/upload");
 		<tr>
 			<td>
 				<c:if test="${product.pcount eq '0'}"><font style="color: red;">[일시품절]</font></c:if>
-				[${product.seq}] ${product.title}
+				[${product.product_seq}] ${product.title}
 			</td>
 		</tr>
 		</table>
@@ -104,15 +104,15 @@ function searchBtnClick() {
 	$("#_searchForm").submit();
 }
 
-function filedowns(thumbNail, seq) {
+/* function filedowns(thumbNail, seq) {
 	var doc = document.file_Down;
 	doc.thumbNail.value = thumbNail;
 	doc.seq.value = seq;
 	doc.submit();
-}
+} */
 function moveDetail( num ) {
-	var seq = Number(num);
-	location.href="productdetail.do?seq="+seq;
+	var product_seq = Number(num);
+	location.href="productdetail.do?product_seq="+product_seq;
 }
 
 </script>
