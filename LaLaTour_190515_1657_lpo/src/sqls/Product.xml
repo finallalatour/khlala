@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Product">
+
+<!-- 축제 가져오기 -->
+<select id="getFestivalList" parameterType="java.lang.String" resultType="lala.com.a.model.FestivalDto">
+SELECT *
+FROM FESTIVAL
+WHERE TITLE LIKE '%'||#{s_keyword}||'%' 
+</select>
+
+<!-- 제품등록 -->
+<insert id="productWriteAf" parameterType="lala.com.a.model.ProductDto">
+INSERT INTO PRODUCT(
+	SEQ,ID,TITLE,CONTENT,
+	PCOUNT,PRICE,
+	PLACE,THUMBNAIL,FSEQ,
+	WDATE,DEL,TNAME)
+VALUES(
+	SEQ_PRODUCT.NEXTVAL,#{id},#{title},#{content},
+	#{pcount},#{price},
+	#{place},#{thumbNail},#{fseq},
+	SYSDATE,0,'PRODUCT')	
+</insert>
+
+<!-- 제품수정 -->
+<update id="productUpdateAf" parameterType="lala.com.a.model.ProductDto">
+UPDATE PRODUCT
+SET
+	TITLE=#{title},
+	CONTENT=#{content},
+	PCOUNT=#{pcount},
+	PRICE=#{price},
+	PLACE=#{place},
+	THUMBNAIL=#{thumbNail},
+	FSEQ=#{fseq}
+WHERE SEQ=#{seq}
+</update>
+
+<!-- 파일업로드 -->
+<insert id="uploadFile" parameterType="lala.com.a.product.FilePdsDto">
+INSERT INTO FILEPDS(
+	SEQ,PSEQ,FILENAMEBF,FILENAMEAF,TNAME)
+VALUES(
+	SEQ_FILEPDS.NEXTVAL,(SELECT MAX(SEQ) FROM PRODUCT), #{fileNameBf}, #{fileNameAf}, 'PRODUCT')	
+</insert>
+
+<!-- 파일삭제 -->
+<delete id="deleteFile" parameterType="java.lang.Integer">
+DELETE FROM FILEPDS
+WHERE SEQ=#{seq}
+</delete>
+
+<!-- 전체목록 -->
+<select id="getProductList" resultType="lala.com.a.model.ProductDto">
+SELECT *
+FROM PRODUCT
+ORDER BY SEQ DESC
+</select>
+
+<!-- 디테일 -->
+<select id="productDetail" parameterType="java.lang.Integer" resultType="lala.com.a.model.ProductDto">
+SELECT *
+FROM PRODUCT
+WHERE SEQ=#{seq}
+</select>
+
+<!-- 디테일에 이미지리스트 -->
+<select id="getFileList" parameterType="java.lang.Integer" resultType="lala.com.a.product.FilePdsDto">
+SELECT *
+FROM FILEPDS
+WHERE TNAME='PRODUCT'
+AND PSEQ=#{seq}
+</select>
+
+<!-- 장바구니에 물건넣기 -->
+<insert id="cartinsert" parameterType="lala.com.a.model.CartDto">
+INSERT INTO CART(
+	SEQ,ID,PSEQ,MYCOUNT,OSEQ)
+VALUES(
+	SEQ_CART.NEXTVAL,#{id},#{pseq},#{myCount},0)
+</insert>
+
+<!-- 내 장바구니 리스트 가져오기 -->
+<select id="getCartList" parameterType="lala.com.a.model.CartDto" resultType="lala.com.a.model.CartDto">
+SELECT C.SEQ,C.ID,C.PSEQ,C.MYCOUNT,C.OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME
+FROM CART C, PRODUCT P
+WHERE C.PSEQ = P.SEQ
+AND C.ID=#{id}
+AND OSEQ=0
+</select>
+
+<!-- 장바구니 입력전에 그 물건이 있는지 확인 -->
+<select id="getProductSeq" parameterType="lala.com.a.model.CartDto" resultType="lala.com.a.model.CartDto">
+SELECT *
+FROM CART
+WHERE ID=#{id}
+AND PSEQ=#{pseq}
+AND OSEQ=0
+</select>
+
+<!-- 장바구니에 수량 변경 -->
+<update id="updateMyCount" parameterType="lala.com.a.model.CartDto">
+UPDATE CART
+SET MYCOUNT=#{myCount}
+WHERE SEQ=#{seq}
+</update>
+
+<!-- 주문하면 하나씩 가져오기 -->
+<select id="getCart" parameterType="java.lang.Integer" resultType="lala.com.a.model.CartDto">
+SELECT C.SEQ,C.ID,C.PSEQ,C.MYCOUNT,OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME
+FROM CART C, PRODUCT P
+WHERE C.PSEQ = P.SEQ
+AND C.SEQ = #{seq}
+</select>
+
+<!-- 주문결제 후 주문내역 입력 -->
+<insert id="orderedInsert" parameterType="lala.com.a.model.OrderedDto">
+	<selectKey keyProperty="seq" resultType="java.lang.Integer" order="BEFORE">
+		SELECT SEQ_ORDERED.NEXTVAL AS seq FROM DUAL
+	</selectKey>
+INSERT INTO ORDERED (
+	SEQ,OID,ONAME,OPHONE,OADDRESS,ODATE,OTPRICE,OMID)
+VALUES (
+	SEQ_ORDERED.CURRVAL,#{oid},#{oname},#{ophone},#{oaddress},SYSDATE,#{otprice},'READY')
+</insert>
+
+<!-- 주문결제 후 장바구니의 oseq에 주문내역 seq를 저장 -->
+<update id="updateCartOseq" parameterType="lala.com.a.model.CartDto">
+UPDATE CART
+SET OSEQ=#{oseq}
+WHERE SEQ=#{seq}
+</update>
+
+<!-- 축제seq로 축제이름 가져오기 -->
+<select id="getFestivalName" parameterType="java.lang.Integer" resultType="lala.com.a.model.FestivalDto">
+SELECT *
+FROM FESTIVAL
+WHERE SEQ=#{seq}
+</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Bbs">
+
+ <select id="totalCount" resultType="java.lang.Integer">
+  SELECT COUNT(SEQ)
+  FROM BBS
+  </select>
+  
+  <select id="bbsList" parameterType="lala.com.a.util.pagingBean" resultType="lala.com.a.model.BbsDto">
+
+  
+   SELECT * FROM 
+				(SELECT * FROM 
+						(SELECT * FROM 
+							BBS
+							
+						WHERE 1=1
+						<if test="choice=='title'">
+						AND TITLE LIKE '%'||#{findWord}||'%'
+						</if>
+						<if test="choice=='content'">
+						AND CONTENT LIKE '%'||#{findWord}||'%'
+						</if>
+						<if test="choice=='id'">
+						AND ID =#{findWord}
+						</if>
+				
+				ORDER BY SEQ ASC)	
+				<![CDATA[
+				 WHERE ROWNUM <= #{startNum}
+				 ]]>
+					ORDER BY SEQ DESC) 
+					<![CDATA[
+					WHERE ROWNUM <= #{countPerPage}
+					]]>
+  
+  </select>
+
+
+
+
+
+
+</mapper>  

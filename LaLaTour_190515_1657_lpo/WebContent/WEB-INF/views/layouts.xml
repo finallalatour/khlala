@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+<!-- 메인페이지 -->
+<definition name="mainpage.tiles" template="/WEB-INF/views/layouts-tiles.jsp">
+   <put-attribute name="header" value="/WEB-INF/views/common/header.jsp"/>
+   <put-attribute name="top_inc" value="/WEB-INF/views/common/top_inc.jsp"/>
+   <put-attribute name="top_menu" value="/WEB-INF/views/common/top_menu.jsp"/>
+   <put-attribute name="main" value="/WEB-INF/views/main/mainpage.jsp"/>
+   <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp"/>
+</definition>
+
+
+
+
+
+<!-- login 화면 -->
+<definition name="login.tiles" template="/WEB-INF/views/layouts-tiles.jsp">
+   <put-attribute name="header" value="/WEB-INF/views/common/header.jsp"/>
+   <put-attribute name="top_inc" value="/WEB-INF/views/common/top_inc.jsp"/>
+   <put-attribute name="top_menu" value="/WEB-INF/views/common/top_menu.jsp"/>
+   <put-attribute name="main" value="/WEB-INF/views/member/login.jsp"/>
+   <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp"/>
+</definition>
+
+<!-- 로그인 에러 -->
+<definition name="error.tiles" template="/WEB-INF/views/member/error.jsp"> </definition>
+
+<!-- join 화면 -->
+<definition name="join.tiles" extends="mainpage.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/member/join.jsp"/>
+</definition>
+
+
+
+
+<!-- 오지훈 - product ///////////////////////////////////////////////// -->
+<!-- productlist 화면 -->
+<definition name="productlist.tiles" template="/WEB-INF/views/layouts-tiles.jsp">
+   <put-attribute name="header" value="/WEB-INF/views/common/header.jsp"/>
+   <put-attribute name="top_inc" value="/WEB-INF/views/common/top_inc.jsp"/>
+   <put-attribute name="top_menu" value="/WEB-INF/views/common/top_menu.jsp"/>
+   <put-attribute name="main" value="/WEB-INF/views/product/productlist.jsp"/>
+   <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp"/>
+</definition>
+
+<!-- productwrite 화면 -->
+<definition name="productwrite.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/productwrite.jsp"/>
+</definition>
+
+<!-- productdetail 화면 -->
+<definition name="productdetail.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/productdetail3.jsp"/>
+</definition>
+
+<!-- productupdate 화면 -->
+<definition name="productupdate.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/productupdate.jsp"/>
+</definition>
+
+<!-- cartlist 화면 -->
+<definition name="cartlist.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/cartlist.jsp"/>
+</definition>
+
+<!-- orderedlist 화면 -->
+<definition name="orderedlist.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/product/orderedlist.jsp"/>
+</definition>
+
+
+<!-- <definition name="memberFind.tiles" extends="mainpage.tiles">
+<put-attribute name="main" value="/WEB-INF/views/member/memberFind.jsp"/>
+</definition> -->
+
+<definition name="meeting.tiles" extends="productlist.tiles">
+<put-attribute name="main" value="/WEB-INF/views/comunity/meeting.jsp"/>
+</definition>
+
+<definition name="meetWrite.tiles" extends="productlist.tiles">
+<put-attribute name="main" value="/WEB-INF/views/comunity/meetWrite.jsp"/>
+</definition>
+
+<definition name="meetDetail.tiles" extends="productlist.tiles">
+<put-attribute name="main" value="/WEB-INF/views/comunity/meetDetail.jsp"/>
+</definition>
+
+
+<!-- 아이디 비번찾기 -->
+<definition name="findId.tiles" extends="login.tiles">
+<put-attribute name="main" value="/WEB-INF/views/member/findId.jsp"/>
+</definition>
+
+<definition name="findIdAf.tiles" extends="login.tiles">
+<put-attribute name="main" value="/WEB-INF/views/member/findIdAf.jsp"/>
+</definition>
+
+
+<definition name="findPwd.tiles" extends="login.tiles">
+<put-attribute name="main" value="/WEB-INF/views/member/findPwd.jsp"/>
+</definition>
+
+<definition name="findPwdAf.tiles" extends="login.tiles">
+<put-attribute name="main" value="/WEB-INF/views/member/findPwdAf.jsp"/>
+</definition>
+
+
+<!-- 자유게시판 -->
+<definition name="bbslist.tiles" extends="productlist.tiles">
+<put-attribute name="main" value="/WEB-INF/views/comunity/bbsList.jsp"/>
+</definition>
+
+
+<!-- 호텔게시판 -->
+
+<definition name="hotellist.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/hotel/hotellist.jsp"/>
+</definition>
+
+<definition name="hotelwrite.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/hotel/hotelwrite.jsp"/>
+</definition>
+<definition name="hoteldetail.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/hotel/hoteldetail.jsp"/>
+</definition>
+<definition name="reserve.tiles" extends="productlist.tiles">
+	<put-attribute name="main" value="/WEB-INF/views/hotel/reserve.jsp"/>
+</definition>
+
+</tiles-definitions>
+

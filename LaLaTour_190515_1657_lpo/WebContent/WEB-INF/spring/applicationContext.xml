@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+   
+   <!-- Database 설정 -->
+   
+   <!-- db 설정 파일 위치 -->
+   <!-- DB Connection을 외부 properties 파일을 참조하여 함 -->
+   <bean id="propertyConfigurer" 
+      class ="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+   
+      <property name="locations">
+         <list>
+         <!-- default 경로는  webcintent // 클래스 경로는 classpath: -->
+            <value>classpath:properties/jdbc.properties</value>
+         </list>
+      </property>
+   </bean>
+   
+   <!-- DBMS -->
+   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+      <property name="driverClassName" value="${jdbc.driverClassName}"/>
+      <property name="url" value="${jdbc.url}"/>
+      <property name="username" value="${jdbc.username}"/>
+      <property name="password" value="${jdbc.password}"/>
+      <!-- 최초 dbconnection 시 커넥팅 할 수 -->
+      <property name="initialSize" value="${jdbc.initialSize}"/>
+      <!-- db 동시사용 최대 허용 수 -->
+      <property name="maxActive" value="${jdbc.maxActive}"/>
+      <!-- 최소 커넥션 수 -->
+      <property name="minIdle" value="${jdbc.initialSize}"></property>
+      <!-- db 대기시간 3초 -->
+      <property name="maxWait" value="3000"/>
+      <!-- 아래 뭐시기 생성 -->
+      <property name="poolPreparedStatements" value="true"/>
+      <!-- db 풀링갯수? -->
+      <property name="maxOpenPreparedStatements" value="50"/>
+   </bean>
+   
+   <!-- mybatis setting -->
+   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+                           <!-- reffernce  dataSource 호출 -->
+      <property name="dataSource" ref="dataSource"/>
+            <!-- 쿼리문 사용 xml 경로    //  해당 경로에 있는 모든 xml 파일-->
+      <property name="mapperLocations" value="classpath:sqls/*.xml"/>
+   </bean>
+   
+   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+      <constructor-arg index="0" ref="sqlSessionFactory"/>
+      <constructor-arg index="1" value="SIMPLE"/>  <!-- SIMPLE/BATCH -->
+   </bean>
+   
+   <!-- JDBC -->
+   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource"/>
+   </bean>
+   
+</beans>

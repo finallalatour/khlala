@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+
+<!-- 회원가입 -->
+<insert id="addmember" parameterType="lala.com.a.model.MemberDto">
+INSERT INTO MEMBER(
+	ID,PWD,NAME,EMAIL,PHONE,
+	ANSWER,ADDRESS,
+	QUESTION,DEL,AUTH)
+VALUES(
+	#{id},#{pwd},#{name},#{email},#{phone},
+	#{answer},#{address},
+	#{question},#{del},#{auth})
+</insert>
+
+<!-- 로그인 -->
+<select id="loginaf" parameterType="lala.com.a.model.MemberDto" resultType="lala.com.a.model.MemberDto">
+	SELECT *
+	FROM MEMBER
+	WHERE ID=#{id} AND PWD=#{pwd}
+</select>
+
+<!-- id체크 -->
+<select id="idsamecheck" parameterType="String" resultType="java.lang.Integer">
+	SELECT COUNT(ID)
+	FROM MEMBER
+	WHERE ID=#{id}
+</select>
+
+<!-- 비밀번호 질문 리스트 -->
+<select id="getQuestionList" resultType="lala.com.a.model.QuestionDto">
+SELECT *
+FROM QUESTION
+</select>
+
+<!-- 아이디찾기 -->
+<select id="findId" parameterType="lala.com.a.model.MemberDto" resultType="java.lang.String">
+SELECT * FROM MEMBER
+WHERE NAME=#{name} AND EMAIL=#{email}
+</select>
+
+<!-- 비밀번호 찾기1(질문으로) -->
+<select id="findPwd1" parameterType="lala.com.a.model.MemberDto" resultType="java.lang.String">
+SELECT PWD FROM MEMBER
+WHERE QUESTION=#{question} AND ID=#{id}
+</select>
+
+<!-- 비밀번호찾기2(비번변경) -->
+<update id="findPwd2" parameterType="lala.com.a.model.MemberDto">
+UPDATE MEMBER SET PWD=#{pwd}
+WHERE ID=#{id} AND EMAIL=#{email}
+</update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

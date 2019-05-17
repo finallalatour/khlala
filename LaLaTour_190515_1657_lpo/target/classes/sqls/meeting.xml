@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+  <mapper namespace="meeting" >
+  
+   <select id="totalCount" parameterType="lala.com.a.util.pagingBean" resultType="java.lang.Integer">
+  SELECT COUNT(SEQ)
+  FROM MEETING
+  WHERE 1=1
+  <if test="choice=='title'">
+						AND TITLE LIKE '%'||#{findWord}||'%'
+						AND DEL=0
+						</if>
+						<if test="choice=='content'">
+						AND CONTENT LIKE '%'||#{findWord}||'%'
+						AND DEL=0
+						</if>
+						<if test="choice=='id'">
+						AND ID =#{findWord}
+						AND DEL=0
+						</if>
+  
+  </select>
+  
+  
+  <select id="meetList" parameterType="lala.com.a.util.pagingBean" resultType="lala.com.a.model.MeetingDto">
+
+  
+   SELECT * FROM 
+				(SELECT * FROM 
+						(SELECT * FROM 
+							
+							(SELECT F.TITLE AS FTITLE, M.SEQ AS SEQ, M.ID AS ID, M.TITLE AS TITLE,
+									 M.CONTENT AS CONTENT, M.EDATE AS EDATE, M.WDATE AS WDATE,
+  									 M.USERCNT AS USERCNT, M.MAXCNT AS MAXCNT, M.PROGRESS AS PROGRESS, M.DEL AS DEL
+ 									 FROM MEETING M , FESTIVAL F
+ 									 WHERE M.MEET_LOC = F.SEQ
+							)
+						
+						WHERE 1=1
+						<if test="choice=='title'">
+						AND TITLE LIKE '%'||#{findWord}||'%'
+						</if>
+						<if test="choice=='content'">
+						AND CONTENT LIKE '%'||#{findWord}||'%'
+						</if>
+						<if test="choice=='id'">
+						AND ID =#{findWord}
+						</if>
+				
+				ORDER BY SEQ ASC)	
+				<![CDATA[
+				 WHERE ROWNUM <= #{startNum}
+				 ]]>
+					ORDER BY SEQ DESC) 
+					<![CDATA[
+					WHERE ROWNUM <= #{countPerPage}
+					]]>
+  
+  </select>
+  
+   <update id="meetProgress">
+  UPDATE MEETING SET PROGRESS = 1
+ <![CDATA[  WHERE USERCNT=MAXCNT OR EDATE < SYSDATE]]>
+  </update>
+  
+  
+  <select id="meetWrite" resultType="lala.com.a.model.FestivalDto">
+  SELECT * FROM FESTIVAL
+ <![CDATA[ WHERE EDATE >= SYSDATE]]>
+  
+  </select>
+  
+  <insert id="meetWriteAf" parameterType="lala.com.a.model.MeetingDto">
+  INSERT INTO MEETING(SEQ, ID, TITLE, CONTENT, MEET_LOC, USERCNT, MAXCNT, DEL, EDATE, WDATE, PROGRESS, TNAME)
+  VALUES(SEQ_MEE.NEXTVAL,#{id},#{title},#{content},#{meet_loc},1,#{maxcnt},0,#{edate},SYSDATE,0,'MEETING')
+  </insert>
+  
+  <select id="meetDetail" parameterType="java.lang.Integer" resultType="lala.com.a.model.MeetingDto">
+  SELECT F.TITLE AS FTITLE, M.SEQ AS SEQ, M.ID AS ID, M.TITLE AS TITLE, M.CONTENT AS CONTENT, M.EDATE AS EDATE, M.WDATE AS WDATE,
+  M.USERCNT AS USERCNT, M.MAXCNT AS MAXCNT, M.PROGRESS AS PROGRESS,M.DEL AS DEL, M.TNAME AS TNAME, M.MEET_LOC AS MEET_LOC
+  FROM MEETING M , FESTIVAL F
+  WHERE M.MEET_LOC = F.SEQ AND M.SEQ = #{seq}
+  </select>
+  
+  
+  
+  <select id="meetDetailJoin" parameterType="lala.com.a.model.MeetingDto" resultType="java.lang.String">
+ 
+  SELECT ID 
+  FROM SUB_MEETING 
+  WHERE PSEQ=#{seq} AND ID=#{id}
+  </select>
+  
+  <insert id="meetDetailJoinAf" parameterType="lala.com.a.model.MeetingDto">
+  INSERT INTO SUB_MEETING(SEQ, PSEQ, ID)
+  VALUES(SEQ_SUB_MEE.NEXTVAL,#{seq} ,#{id})
+  </insert>
+  
+  <update id="joinCnt" parameterType="lala.com.a.model.MeetingDto">
+  UPDATE MEETING SET USERCNT = USERCNT+1
+  WHERE SEQ =#{seq}
+  </update>
+  
+  
+  <delete id="meetDetailDelJoin" parameterType="lala.com.a.model.MeetingDto">
+  DELETE FROM SUB_MEETING
+  WHERE ID=#{id} AND PSEQ=#{seq}
+  </delete>
+  
+  <update id="joinDelCnt" parameterType="lala.com.a.model.MeetingDto">
+  UPDATE MEETING SET USERCNT = USERCNT-1
+  WHERE SEQ =#{seq}
+  </update>
+  
+  <update id="meetEnd" parameterType="java.lang.Integer">
+   UPDATE MEETING SET PROGRESS = 1
+   WHERE SEQ =#{seq}
+  </update>
+  
+
+   <insert id="meetReplyWrite" parameterType="lala.com.a.model.ReplyDto">
+  INSERT INTO REPLY(SEQ,PSEQ,TNAME,ID,CONTENT, REF,STEP,WDATE,DEL,LOCK_)
+  VALUES(SEQ_REP.NEXTVAL,#{pseq},'MEETING',#{id},#{content},SEQ_REP.CURRVAL, 0,SYSDATE,0,#{lock_})
+  </insert> 
+  
+  <select id="meetReply" parameterType="lala.com.a.model.ReplyDto" resultType="lala.com.a.model.ReplyDto">
+  SELECT * FROM REPLY
+  WHERE PSEQ=#{seq}
+  ORDER BY REF ASC, STEP ASC  
+  </select>
+  
+ <update id="meetDelete">
+ UPDATE MEETING SET DEL=1
+ WHERE SEQ=#{seq}
+ </update>
+ 
+ <insert id="meetAnswer" parameterType="lala.com.a.model.ReplyDto">
+ INSERT INTO REPLY(SEQ,PSEQ,TNAME,ID,CONTENT, REF,STEP,WDATE,DEL,LOCK_)
+ VALUES(SEQ_REP.NEXTVAL,#{pseq},'MEETING',#{id},#{content},#{ref}, 
+ (SELECT MAX(STEP)+1 FROM REPLY WHERE REF=#{ref}),SYSDATE,0,#{lock_})
+ </insert>
+ 
+ <update id="meetReplyUpdate" parameterType="lala.com.a.model.ReplyDto">
+ UPDATE REPLY SET CONTENT=#{content}, DEL=2
+ WHERE SEQ=#{seq} AND PSEQ=#{pseq}
+ </update>
+ 
+  <update id="meetReplyDelete" parameterType="lala.com.a.model.ReplyDto">
+ UPDATE REPLY SET DEL=1
+ WHERE SEQ=#{seq} AND PSEQ=#{pseq}
+ </update>
+ 
+<update id="meetUpdate" parameterType="lala.com.a.model.MeetingDto">
+UPDATE MEETING SET TITLE=#{title}, CONTENT=#{content}
+WHERE SEQ=#{seq}
+</update>
+  
+  </mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="Hotel">
+<!-- 리스트 -->
+<select id="getHotelList" resultType="lala.com.a.model.HotelDto">
+ SELECT *
+ FROM HOTEL
+</select>
+<!-- 글쓰기 -->
+
+<insert id="writeHotel" parameterType="lala.com.a.model.HotelDto">
+
+	<selectKey keyProperty="seq" resultType="java.lang.Integer" order="BEFORE">
+		SELECT SEQ_HOT.NEXTVAL FROM DUAL
+	</selectKey>
+	INSERT INTO HOTEL(SEQ, ID, TITLE, CONTENT, PLACE, DEL, THUMBNAIL, PRICE, MAXCOUNT)
+	VALUES(SEQ_HOT.CURRVAL, 'ktra0', #{title}, #{content}, #{place}, 0, #{thumbnail}, #{price}, #{maxcount})
+	
+</insert>
+<!-- 글쓰기시 파일업로드 -->
+<insert id="uploadHotelPds" parameterType="lala.com.a.hotel.PdsDto">
+	INSERT INTO PDS(SEQ, FILENAME_BF,FILENAME_AF,PSEQ,TNAME)
+	VALUES(SEQ_PDS.NEXTVAL, #{fileName_Bf}, #{fileName_Af}, #{pseq}, 'HOTEL')
+</insert>
+
+<!-- 디테일 -->
+<select id="getHotelDetail" parameterType="java.lang.Integer" resultType="lala.com.a.model.HotelDto">
+	SELECT *
+	FROM HOTEL
+	WHERE SEQ = #{seq}
+</select>
+<!-- 디테일 다중파일 -->
+<select id="getHotelPds" parameterType="java.lang.Integer" resultType="lala.com.a.hotel.PdsDto">
+	SELECT *
+	FROM PDS
+	WHERE PSEQ = #{pseq}
+	AND TNAME ='HOTEL'
+</select>
+<!-- 디테일안에서 예약관리 -->
+<select id="getReserveDate" parameterType="java.lang.Integer" resultType="lala.com.a.model.ReserveDto">
+	SELECT SDATE, EDATE
+	FROM RESERVE
+	WHERE PSEQ = #{pseq}
+</select>
+<!-- 댓글보기 -->
+<select id="getReplyList" parameterType="java.lang.Integer" resultType="lala.com.a.model.ReplyDto">
+	SELECT R.SEQ, R.PSEQ, R.TNAME, R.ID, R.CONTENT,R.REF, R.STEP, R.WDATE,R.DEL ,R.LOCK_, M.NAME
+	FROM REPLY R, MEMBER M
+	WHERE M.ID = R.ID
+	AND PSEQ = #{pseq}
+	AND TNAME= 'HOTEL'
+</select>
+<!-- 댓글쓰기 -->
+<insert id="addReply" parameterType="lala.com.a.model.ReplyDto">
+	INSERT INTO REPLY(SEQ, PSEQ, TNAME, ID, CONTENT, REF, STEP, WDATE, DEL, LOCK_)
+	VALUES(SEQ_REP.NEXTVAL, #{pseq}, 'HOTEL','ktra0',#{content},
+			(SELECT NVL( MAX(REF),1 )+1 FROM REPLY WHERE PSEQ = #{pseq} AND TNAME='HOTEL'),
+		 0 , SYSDATE, 0, 0)
+</insert>
+<!-- 예약하기 -->
+<insert id="addHotelReserve" parameterType="lala.com.a.model.ReserveDto">
+	INSERT INTO RESERVE(SEQ, MERCHANT, ID, SDATE, EDATE, DEL, PSEQ, RE_PRICE, WDATE)
+	VALUES(SEQ_RES.NEXTVAL, #{merchant}, 'ktra0', #{sdate}, #{edate}, 0, #{pseq}, #{re_price}, SYSDATE)
+</insert>
+
+</mapper>
