@@ -25,11 +25,11 @@
 
 <thead>
 <tr>
-	<th>선택</th>
+	<th>선택<input type="checkbox" name="allChk" id="_allChk"></th>
 	<th>상품</th>
 	<th>상품명</th>
 	<th>수량</th>
-	<th>지우기</th>
+	<th>지우기<button type="button" id="_checkDels">선택항목 삭제</button></th>
 </tr>
 </thead>
 
@@ -195,6 +195,7 @@ function tpCal() {
 }
 
 $(document).on("change", "input[name=chk_order]", function() {
+	$("#_allChk").prop("checked", false);
 	tpCal();
 	//var obj_cb = document.getElementsByName("chk_order");
 	/* var obj_cb = $("input[name=chk_order]");
@@ -228,9 +229,27 @@ $(document).on("change", "input[name=chk_order]", function() {
 	//calTotalPrice(obj_cb);
 });
 
+//전체선택 체크박스 변동시,
+$(document).on("change", "#_allChk", function() {
+	//체크가 됐으면,
+	if( $("#_allChk").is(":checked") ) {
+		$("input:checkbox[name=chk_order]").prop("checked", true);
+	}
+	//체크가 해제됐으면,
+	else {
+		$("input:checkbox[name=chk_order]").prop("checked", false);
+	}
+	tpCal();
+});
 
-
-
+//선택항목 삭제 버튼 클릭시
+$(document).on("click", "#_checkDels", function() {
+	if( $("input:checkbox[name=chk_order]:checked").length==0 ) {
+		alert("선택된 항목이 없습니다");
+		return;
+	}
+	$("#_orderForm").attr("action", "deleteCart.do").submit();
+});
 
 
 

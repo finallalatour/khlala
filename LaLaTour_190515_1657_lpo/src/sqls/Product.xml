@@ -128,7 +128,7 @@ VALUES(
 </insert>
 
 <!-- 내 장바구니 리스트 가져오기 -->
-<select id="getCartList" parameterType="lala.com.a.model.CartDto" resultType="lala.com.a.model.CartDto">
+<select id="getCartList" parameterType="java.lang.String" resultType="lala.com.a.model.CartDto">
 SELECT C.SEQ,C.ID,C.PSEQ,C.MYCOUNT,C.OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME
 FROM CART C, PRODUCT P
 WHERE C.PSEQ = P.SEQ
@@ -197,6 +197,32 @@ WHERE SEQ=#{pseq}
 DELETE FROM CART
 WHERE SEQ=#{seq}
 </delete>
+
+<!-- 댓글 입력 -->
+<insert id="insertReply" parameterType="lala.com.a.model.ReplyDto">
+INSERT INTO REPLY(
+	SEQ,PSEQ,TNAME,ID,
+	CONTENT,REF,STEP,
+	WDATE,DEL,LOCK_)
+VALUES(
+	SEQ_REP.NEXTVAL,#{pseq},'PRODUCT',#{id},
+	#{content},SEQ_REP.CURRVAL,0,
+	SYSDATE,0,0)	
+</insert>
+
+<!-- 댓글목록 -->
+<select id="getReplyList" resultType="lala.com.a.model.ReplyDto">
+SELECT *
+FROM REPLY
+ORDER BY REF ASC, STEP ASC
+</select>
+
+<!-- 과거 주문내역 리스트보기 -->
+<select id="getSellList" parameterType="java.lang.String" resultType="lala.com.a.model.ProductDto">
+SELECT *
+FROM ORDERED
+WHERE ID=#{id}
+</select>
 
 </mapper>
 

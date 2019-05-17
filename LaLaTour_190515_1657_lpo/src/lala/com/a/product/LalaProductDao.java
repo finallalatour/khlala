@@ -6,6 +6,7 @@ import lala.com.a.model.CartDto;
 import lala.com.a.model.FestivalDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
+import lala.com.a.model.ReplyDto;
 
 public interface LalaProductDao {
 
@@ -30,7 +31,7 @@ public interface LalaProductDao {
 	public CartDto getProductSeq(CartDto dto); //물건담을때 장바구니에 이미있는건지 확인
 	public boolean updateMyCount(CartDto dto); //수량변경 (담는데 이미있을때)
 	public boolean cartinsert(CartDto dto);
-	public List<CartDto> getCartList(CartDto dto); //장바구니 목록
+	public List<CartDto> getCartList(String id); //장바구니 목록
 	public CartDto getCart(int seq); //주문의 제품dto 하나씩 가져오기
 	public boolean deleteCart(int seq); //장바구니 선택물품 삭제
 	
@@ -38,6 +39,10 @@ public interface LalaProductDao {
 	public int orderedInsert(OrderedDto dto); //주문결제시 주문자정보 저장
 	public boolean updateCartOseq(CartDto dto); //주문결제 후 장바구니의 oseq에 주문내역 seq를 저장
 	public boolean updateProductPCount(CartDto dto); //주문결제 후 주문된 물품수량만큼 원본물품의 재고를 수정
+	
+	//댓글
+	public List<ReplyDto> getReplyList(); //댓글목록
+	public boolean insertReply(ReplyDto dto); //댓글입력
 }
 
 

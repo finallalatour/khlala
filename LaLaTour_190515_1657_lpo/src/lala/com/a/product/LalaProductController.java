@@ -29,6 +29,7 @@ import lala.com.a.model.FestivalDto;
 import lala.com.a.model.MemberDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
+import lala.com.a.model.ReplyDto;
 import lala.com.a.util.FUpUtil;
 
 @Controller
@@ -224,11 +225,18 @@ public class LalaProductController {
 	public String productdetail(int seq, Model model) {
 		logger.info("LalaProductController productdetail " + new Date());
 		
+		System.out.println("seq :" + seq);
+		
 		ProductDto product = lalaProductService.productDetail(seq);
+		System.out.println("1");
 		List<FilePdsDto> fileList = lalaProductService.getFileList(seq);
+		System.out.println("2");
+		List<ReplyDto> replyList = lalaProductService.getReplyList();
+		System.out.println("3 넘기기직전");
 		
 		model.addAttribute("product", product);
 		model.addAttribute("fileList", fileList);
+		model.addAttribute("replyList", replyList);
 		
 		return "productdetail.tiles";
 	}
@@ -266,11 +274,14 @@ public class LalaProductController {
 	
 	//장바구니 리스트
 	@RequestMapping(value="cartlist.do", method=RequestMethod.GET)
-	public String cartlist(CartDto dto, Model model) {
+	public String cartlist(CartDto dto, Model model, HttpServletRequest req) {
 		logger.info("LalaProductController cartlist " + new Date());
 		
+		HttpSession session = req.getSession(false);
+		MemberDto member = (MemberDto)session.getAttribute("login");
+		
 		//1. 일단 리스트들 받아온다.
-		List<CartDto> clist = lalaProductService.getCartList(dto);
+		List<CartDto> clist = lalaProductService.getCartList(member.getId());
 		
 		//2. 하나씩 보면서 재고와 장바구니 수량을 보고 장바구니가 많으면 재고로 맞춰서 수정해준다.
 		for (CartDto cart : clist) {
@@ -437,6 +448,41 @@ public class LalaProductController {
 		lalaProductService.deleteCart(seq);
 		
 		return "redirect:/cartlist.do?id="+dto.getId();
+	}
+	
+	@RequestMapping(value="insertReply.do", method=RequestMethod.POST)
+	public String insertReply(ReplyDto dto) {
+		logger.info("LalaProductController replyInsert " + new Date());
+		
+		System.out.println("c rdto: " + dto.toString());
+		boolean isS = lalaProductService.insertReply(dto);
+		
+		return "redirect:/productdetail.do?seq="+dto.getPseq();
+	}
+	
+	@RequestMapping(value="sellList.do", method=RequestMethod.GET)
+	public String sellList(HttpServletRequest req) {
+		logger.info("LalaProductController replyInsert " + new Date());
+		System.out.println("1111111111111111111111111111111");
+		
+		HttpSession session = req.getSession(false);
+		MemberDto login = (MemberDto)session.getAttribute("login");
+		System.out.println("con login: " + login.toString());
+		
+		return "";
+	}
+	
+	@RequestMapping(value="deleteCart.do", method=RequestMethod.POST)
+	public String deleteCart(int[] chk_order, HttpServletRequest req) {
+		logger.info("LalaProductController deleteCart " + new Date());
+		
+		String id = ((MemberDto)req.getSession(false).getAttribute("login")).getId();
+		
+		for (int seq : chk_order) {
+			lalaProductService.deleteCart(seq);
+		}
+		
+		return "redirect:/cartlist.do";
 	}
 }
 

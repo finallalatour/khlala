@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <fmt:requestEncoding value="utf-8"/>
 
+
 <div style="width: 1500px;">
 <h1>제품등록</h1>
 
@@ -17,7 +18,7 @@
 <tbody>
 <tr>
 	<th>ID</th>
-	<td><input type="text" name="id" value="admin" readonly="readonly"></td>
+	<td><input type="text" name="id" value="${login.id}" readonly="readonly"></td>
 </tr>
 <tr>
 	<th>제목</th>

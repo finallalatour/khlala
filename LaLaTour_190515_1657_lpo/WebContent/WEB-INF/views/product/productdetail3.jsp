@@ -123,14 +123,59 @@
 <pre>${product.content}</pre>
 </div> <!-- end div_content_wrap -->
 
+<!-- 댓글 입력창 div -->
+<%-- 
 <div id="div_reply_wrap" style="width: 1500px; display: inline-block; padding: 50px;">
 <h2>댓글</h2>
-<div>
-댓글쓰기 창 <br> 
-<textarea rows="5" cols="20" name="title"></textarea>
-</div>
+<div id="rep_insert_div">
+<form id="_repForm" method="post">
+	<input type="hidden" name="pseq" value="${product.seq}">
+	<input type="hidden" name="id" value="${login.id}">
+	댓글쓰기 창 [${login.id}] <br> 
+	<textarea rows="5" cols="20" name="content" id="_content"></textarea>
+	<button type="button" onclick="insertReply()">입력</button>
+</form>
+</div> --%> <!-- end rep_insert_div --><br>
 
-</div> <!-- end div_reply_wrap -->
+<!-- 댓글 목록이 나올 div//////////////////////////////////////////////////////////////////////////// -->
+<%-- <div id="rep_list_div">
+<c:if test="${replyList.size() eq '0' or empty replyList }">
+댓글이 없습니다
+</c:if>
+<c:if test="${replyList.size() > '0' }">
+<c:forEach items="${replyList }"  var="reply">
+	<div id="reply${reply.seq}">
+	<form id="reply${reply.seq}" method="post">
+		<table border="1">
+		<colgroup>
+			<col width="200px"><col width="1000px"><col width="200px"><col width="200px">
+		</colgroup>
+		<tr>
+			<td>${reply.id}</td>
+			<td>
+				<input type="text" id="content${reply.seq}" style="border: none; width: 100%;" value="${reply.content}" readonly="readonly">
+				${reply.content}
+			</td>
+			<td>${reply.wdate}</td>
+			<td>
+				<div id="before${reply.seq}">
+					<button type="button" onclick="updateView(${reply.seq})">수정</button>
+					<button type="button" onclick="deleteReply(${reply.seq})">삭제</button>
+				</div>
+				<div id="after${reply.seq}" style="display: none;">
+					<button type="button" onclick="updateReply(${reply.seq})">완료</button>
+					<button type="button" onclick="cancelReply(${reply.seq})">취소</button>
+				</div>
+			</td>
+		</tr>
+		</table>
+	</form>
+	</div>
+</c:forEach>
+</c:if>
+</div> --%> <!-- end rep_list_div -->
+
+<!-- </div> --> <!-- end div_reply_wrap -->
 
 </div> <!-- end div_root -->
 
@@ -246,6 +291,27 @@ $(document).on("click", "#_leftBtn", function() {
 $(document).on("click", "li.als-item", function() {
 	$("#div_pic img").attr("src", $(this).children("img").attr("src"));
 });
+
+/* 
+function insertReply() {
+	if($("#_content").val().trim()=="" || $("#_content").val().trim().length==0) {
+		alert("댓글 내용을 입력해야 합니다");
+		return;
+	}
+	$("#_repForm").attr("action", "insertReply.do").submit();
+}
+
+function updateView(seq) {
+	$("#content"+seq).css("border", "inherit");
+	$("#content"+seq).css("background-color", "#999999");
+	$("#content"+seq).removeAttr("readonly");
+	
+	$("#before"+seq).hide();
+	$("#after"+seq).show();
+	
+	$("#replyListForm").attr("action")
+} 
+*/
 
 </script>
 

@@ -4,6 +4,20 @@ import java.io.Serializable;
 
 public class ReplyDto extends MemberDto implements Serializable {
 
+/*	private int seq;
+	private int pseq; //본문글
+	private String id; //쓴사람
+	
+	private String content;
+	private String wdate; //수정하면 바뀜
+	
+	private int ref;
+	private int step;
+	
+	private int del; //0일반, 1삭제, 2수정
+	private int lock_; //비밀댓글 0:기본, 1:숨김
+	private String tname; //어떤테이블인지 대문자로.
+*/	
 	private int seq;
 	private int pseq;
 	private String tname;
@@ -14,6 +28,8 @@ public class ReplyDto extends MemberDto implements Serializable {
 	private String wdate;
 	private int del;
 	private int lock_;
+	
+	
 	public ReplyDto() {
 		// TODO Auto-generated constructor stub
 	}

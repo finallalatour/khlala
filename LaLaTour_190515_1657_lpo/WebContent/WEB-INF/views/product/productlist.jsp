@@ -11,6 +11,11 @@ String str = request.getServletContext().getRealPath("/upload");
 
 <h1>제품목록</h1>
 
+테스트용
+<c:if test="${not empty login and login.id ne '' and login.auth eq '0'}">
+<button type="button" onclick="location.href='sellList.do'">주문내역</button>
+</c:if>
+
 <c:if test="${not empty login and login.id ne '' and login.auth eq '0'}">
 	<button type="button" onclick="location.href='cartlist.do?id=${login.id}'">장바구니</button>
 </c:if>
@@ -29,7 +34,7 @@ String str = request.getServletContext().getRealPath("/upload");
 <c:if test="${count == '5'}"><c:set var="count" value="1"/></c:if>
 <c:if test="${count == '1'}"><tr></c:if>
 	<td>
-		<div onclick="location.href='productdetail.do?seq=${product.seq}'">
+		<div onclick="moveDetail(${product.seq})">
 		<table>
 		<tr>
 			<td>
@@ -100,11 +105,14 @@ function searchBtnClick() {
 }
 
 function filedowns(thumbNail, seq) {
-	alert("111");
 	var doc = document.file_Down;
 	doc.thumbNail.value = thumbNail;
 	doc.seq.value = seq;
 	doc.submit();
+}
+function moveDetail( num ) {
+	var seq = Number(num);
+	location.href="productdetail.do?seq="+seq;
 }
 
 </script>

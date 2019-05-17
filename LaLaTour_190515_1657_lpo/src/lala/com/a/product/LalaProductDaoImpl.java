@@ -10,6 +10,7 @@ import lala.com.a.model.CartDto;
 import lala.com.a.model.FestivalDto;
 import lala.com.a.model.OrderedDto;
 import lala.com.a.model.ProductDto;
+import lala.com.a.model.ReplyDto;
 import lala.com.a.product.LalaProductDao;
 
 @Repository
@@ -66,9 +67,9 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	}
 
 	@Override
-	public List<CartDto> getCartList(CartDto dto) {
+	public List<CartDto> getCartList(String id) {
 		// 장바구니 목록
-		return sqlSession.selectList(ns+"getCartList", dto);
+		return sqlSession.selectList(ns+"getCartList", id);
 	}
 
 	@Override
@@ -153,6 +154,19 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	public int getProductTotalCount(PagingBean pagingBean) {
 		// 제품전체목록 수 (페이징 때문에 필요)
 		return sqlSession.selectOne(ns+"getProductTotalCount", pagingBean);
+	}
+
+	@Override
+	public boolean insertReply(ReplyDto dto) {
+		// 댓글입력
+		int n = sqlSession.insert(ns+"insertReply", dto);
+		return n>0? true:false;
+	}
+
+	@Override
+	public List<ReplyDto> getReplyList() {
+		// 댓글목록
+		return sqlSession.selectList(ns+"getReplyList");
 	}
 	
 	
