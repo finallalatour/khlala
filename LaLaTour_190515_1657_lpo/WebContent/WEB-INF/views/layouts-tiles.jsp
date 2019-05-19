@@ -18,7 +18,7 @@
 <tiles:insertAttribute name="header"/>
 
 <link rel="stylesheet" type="text/css"
-   href="<%=request.getContextPath() %>/css/layout_css.css">
+   href="<%=request.getContextPath() %>/resources/css/layout_css.css">
 </head>
 <body>
 <div>

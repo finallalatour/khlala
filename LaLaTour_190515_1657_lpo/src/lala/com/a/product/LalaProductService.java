@@ -51,7 +51,9 @@ public interface LalaProductService {
 	public List<OrderedDto> getOrderSList(String omid); //내역리스트 - 특정주문번호
 	
 	//상품평
-	public boolean insertGoodsAf(GoodsDto dto); //상품평 입력
+	public int insertGoodsAf(GoodsDto dto); //상품평 입력
+	public boolean updateCartGseq(GoodsDto dto); //상품평 입력시 cart의 gseq변경
+	public void updateProductPH(ProductDto pdto); //상품평 입력시 해당제품 총별점,사람수 변경
 }
 
 

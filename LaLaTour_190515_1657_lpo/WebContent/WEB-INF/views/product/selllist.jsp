@@ -52,7 +52,17 @@
 			${tprice}원
 		</span><br>
 	</td>
-	<td><button type="button" onclick="location.href='insertGoods.do?product_seq=${item.product_seq}'">상품평쓰기</button></td>
+	<td>
+		<c:if test="${item.gseq > '0'}">
+			작성완료
+		</c:if>
+		<c:if test="${item.gseq eq '0'}">
+			<button type="button" onclick="location.href='insertGoods.do?product_seq=${item.product_seq}&cart_seq=${item.cart_seq}'">상품평쓰기</button>
+		</c:if>
+	</td>
+	<%-- <td>
+		<button type="button" onclick="location.href='insertGoods.do?cart_seq=${item.cart_seq}&product_seq=${item.product_seq}'">상품평쓰기</button>
+	</td> --%>
 </tr>
 </c:forEach>
 </c:if>

@@ -18,12 +18,14 @@ INSERT INTO PRODUCT(
 	PRODUCT_SEQ,ID,TITLE,SUBTITLE,CONTENT,
 	PCOUNT,PRICE,
 	PLACE,THUMBNAIL,FSEQ,
-	WDATE,DEL,TNAME)
+	WDATE,DEL,TNAME,
+	PPOINT,HCOUNT)
 VALUES(
 	SEQ_PRODUCT.NEXTVAL,#{id},#{title},#{subtitle},#{content},
 	#{pcount},#{price},
 	#{place},#{thumbNail},#{fseq},
-	SYSDATE,0,'PRODUCT')	
+	SYSDATE,0,'PRODUCT',
+	0,0)	
 </insert>
 
 <!-- 제품수정 -->
@@ -72,7 +74,7 @@ ORDER BY SEQ DESC
 <select id="getProductList" parameterType="lala.com.a.product.PagingBean" resultType="lala.com.a.model.ProductDto">
 SELECT * FROM (
 	SELECT * FROM (
-		SELECT PRODUCT_SEQ,ID,TITLE,SUBTITLE,CONTENT,PCOUNT,PRICE,PLACE,THUMBNAIL,FSEQ,WDATE,DEL,TNAME
+		SELECT PRODUCT_SEQ,ID,TITLE,SUBTITLE,CONTENT,PCOUNT,PRICE,PLACE,THUMBNAIL,FSEQ,WDATE,DEL,TNAME,PPOINT,HCOUNT
 		FROM PRODUCT
 		WHERE 1=1
 		<if test="findWord!=null and findWord!=''">
@@ -123,14 +125,14 @@ AND PSEQ=#{product_seq}
 <!-- 장바구니에 물건넣기 -->
 <insert id="cartinsert" parameterType="lala.com.a.model.CartDto">
 INSERT INTO CART(
-	CART_SEQ,ID,PSEQ,MYCOUNT,OSEQ)
+	CART_SEQ,ID,PSEQ,MYCOUNT,OSEQ,GSEQ)
 VALUES(
-	SEQ_CART.NEXTVAL,#{id},#{pseq},#{myCount},0)
+	SEQ_CART.NEXTVAL,#{id},#{pseq},#{myCount},0,0)
 </insert>
 
 <!-- 내 장바구니 리스트 가져오기 -->
 <select id="getCartList" parameterType="java.lang.String" resultType="lala.com.a.model.CartDto">
-SELECT C.CART_SEQ,C.ID,C.PSEQ,C.MYCOUNT,C.OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME
+SELECT C.CART_SEQ,C.ID,C.PSEQ,C.GSEQ,C.MYCOUNT,C.OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME,PPOINT,HCOUNT
 FROM CART C, PRODUCT P
 WHERE C.PSEQ = P.PRODUCT_SEQ
 AND C.ID=#{id}
@@ -155,7 +157,7 @@ WHERE CART_SEQ=#{cart_seq}
 
 <!-- 주문하면 하나씩 가져오기 -->
 <select id="getCart" parameterType="java.lang.Integer" resultType="lala.com.a.model.CartDto">
-SELECT C.CART_SEQ,C.ID,C.PSEQ,C.MYCOUNT,OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME
+SELECT C.CART_SEQ,C.ID,C.PSEQ,C,GSEQ,C.MYCOUNT,OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME,PPOINT,HCOUNT
 FROM CART C, PRODUCT P
 WHERE C.PSEQ = P.PRODUCT_SEQ
 AND C.CART_SEQ = #{cart_seq}
@@ -222,8 +224,9 @@ ORDER BY REF ASC, STEP ASC
 <select id="getSellList" parameterType="java.lang.String" resultType="lala.com.a.model.OrderedDto">
 SELECT 
 	O.ORDERED_SEQ, O.OID, O.ONAME, O.OPHONE, O.OADDRESS, O.ODATE, O.OTPRICE, O.OMID,
-	C.CART_SEQ, C.PSEQ, C.MYCOUNT, C.OSEQ,
-	P.PRODUCT_SEQ, P.TITLE, P.SUBTITLE, P.CONTENT, P.PCOUNT, P.PRICE, P.PLACE, P.THUMBNAIL, P.FSEQ, P.WDATE, P.DEL, P.TNAME
+	C.CART_SEQ, C.PSEQ, C.GSEQ, C.MYCOUNT, C.OSEQ,
+	P.PRODUCT_SEQ, P.TITLE, P.SUBTITLE, P.CONTENT, P.PCOUNT, P.PRICE, P.PLACE, P.THUMBNAIL, P.FSEQ, P.WDATE, P.DEL, P.TNAME,
+		P.PPOINT, P.HCOUNT
 FROM ORDERED O, CART C, PRODUCT P
 WHERE O.ORDERED_SEQ = C.OSEQ
 AND C.PSEQ = P.PRODUCT_SEQ
@@ -234,8 +237,9 @@ AND O.OID=#{id}
 <select id="getOrderSList" parameterType="java.lang.String" resultType="lala.com.a.model.OrderedDto">
 SELECT 
 	O.ORDERED_SEQ, O.OID, O.ONAME, O.OPHONE, O.OADDRESS, O.ODATE, O.OTPRICE, O.OMID,
-	C.CART_SEQ, C.PSEQ, C.MYCOUNT, C.OSEQ,
-	P.PRODUCT_SEQ, P.TITLE, P.SUBTITLE, P.CONTENT, P.PCOUNT, P.PRICE, P.PLACE, P.THUMBNAIL, P.FSEQ, P.WDATE, P.DEL, P.TNAME
+	C.CART_SEQ, C.PSEQ, C.GSEQ, C.MYCOUNT, C.OSEQ,
+	P.PRODUCT_SEQ, P.TITLE, P.SUBTITLE, P.CONTENT, P.PCOUNT, P.PRICE, P.PLACE, P.THUMBNAIL, P.FSEQ, P.WDATE, P.DEL, P.TNAME,
+		P.PPOINT, P.HCOUNT
 FROM ORDERED O, CART C, PRODUCT P
 WHERE O.ORDERED_SEQ = C.OSEQ
 AND C.PSEQ = P.PRODUCT_SEQ
@@ -244,13 +248,23 @@ AND O.OMID=#{omid}
 
 <!-- 상품평 등록 -->
 <insert id="insertGoodsAf" parameterType="lala.com.a.model.GoodsDto">
+	<selectKey keyProperty="goods_seq" resultType="java.lang.Integer" order="BEFORE">
+		SELECT SEQ_GOODS.NEXTVAL AS goods_seq FROM DUAL
+	</selectKey>
 INSERT INTO GOODS(
-	GOODS_SEQ,GPSEQ,GID,GCONTENT,
+	GOODS_SEQ,GPSEQ,GCSEQ,GID,GCONTENT,
 	GPOINT,GDATE,GTNAME)
 VALUES(
-	SEQ_GOODS.NEXTVAL,#{gpseq},#{gid},#{gcontent},
+	SEQ_GOODS.CURRVAL,#{gpseq},#{gcseq},#{gid},#{gcontent},
 	#{gpoint},SYSDATE,'GOODS')	
 </insert>
+
+<!-- 상품평 등록할 때 해당 카트의 gseq를 변경해주기 -->
+<update id="updateCartGseq" parameterType="java.lang.Integer">
+UPDATE CART
+SET GSEQ=#{goods_seq}
+WHERE CART_SEQ=#{gcseq}
+</update>
 
 <!-- 제품 상품평 목록 -->
 <select id="getGoodsList" parameterType="java.lang.Integer" resultType="lala.com.a.model.GoodsDto">
@@ -259,6 +273,13 @@ FROM GOODS
 WHERE GPSEQ=#{gpseq}
 ORDER BY GDATE DESC
 </select>
+
+<!-- 상품평 입력시 해당제품 총별점,사람수 변경 -->
+<update id="updateProductPH" parameterType="lala.com.a.model.ProductDto">
+UPDATE PRODUCT
+SET PPOINT=#{ppoint}, HCOUNT=#{hcount}
+WHERE PRODUCT_SEQ=#{product_seq}
+</update>
 
 </mapper>
 

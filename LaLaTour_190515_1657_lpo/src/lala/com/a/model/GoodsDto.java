@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class GoodsDto implements Serializable {
 
 	private int goods_seq;
-	private int gpseq; //해당제품 기본키
+	private int gpseq; //해당제품 기본키 (product)
+	private int gcseq; //해당구매내역 장바구니 기본키 (cart)
 	private String gid; //작성자
 	private String gcontent; //내용
 	private int gpoint; //별점 (1~5)
@@ -14,10 +15,12 @@ public class GoodsDto implements Serializable {
 	
 	public GoodsDto() {}
 
-	public GoodsDto(int goods_seq, int gpseq, String gid, String gcontent, int gpoint, String gdate, String gtname) {
+	public GoodsDto(int goods_seq, int gpseq, int gcseq, String gid, String gcontent, int gpoint, String gdate,
+			String gtname) {
 		super();
 		this.goods_seq = goods_seq;
 		this.gpseq = gpseq;
+		this.gcseq = gcseq;
 		this.gid = gid;
 		this.gcontent = gcontent;
 		this.gpoint = gpoint;
@@ -39,6 +42,14 @@ public class GoodsDto implements Serializable {
 
 	public void setGpseq(int gpseq) {
 		this.gpseq = gpseq;
+	}
+
+	public int getGcseq() {
+		return gcseq;
+	}
+
+	public void setGcseq(int gcseq) {
+		this.gcseq = gcseq;
 	}
 
 	public String getGid() {
@@ -83,7 +94,7 @@ public class GoodsDto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "GoodsDto [goods_seq=" + goods_seq + ", gpseq=" + gpseq + ", gid=" + gid + ", gcontent=" + gcontent
-				+ ", gpoint=" + gpoint + ", gdate=" + gdate + ", gtname=" + gtname + "]";
+		return "GoodsDto [goods_seq=" + goods_seq + ", gpseq=" + gpseq + ", gcseq=" + gcseq + ", gid=" + gid
+				+ ", gcontent=" + gcontent + ", gpoint=" + gpoint + ", gdate=" + gdate + ", gtname=" + gtname + "]";
 	}
 }

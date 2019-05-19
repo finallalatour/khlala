@@ -6,10 +6,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <fmt:requestEncoding value="utf-8"/>
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath() %>/css/layout_css.css">
+	href="<%=request.getContextPath() %>/resources/css/layout_css.css">
 <div class="_top_menu">
 	<a href="mainpage.do">
-		<img src="<%=request.getContextPath() %>/images/logo.png"/ style="float: left">
+		<img src="<%=request.getContextPath() %>/resources/images/logo.png"/ style="float: left">
 	</a>
 	
 	<ul>

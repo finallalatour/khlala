@@ -2,5 +2,5 @@
     pageEncoding="UTF-8"%>
 
 <div>
-   <img alt="" src="<%=request.getContextPath() %>/images/footer.png" border="0" style="width: 100%">
+   <img alt="" src="<%=request.getContextPath() %>/resources/images/footer.png" border="0" style="width: 100%">
 </div>

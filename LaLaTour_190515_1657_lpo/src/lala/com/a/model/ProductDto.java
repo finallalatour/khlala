@@ -21,10 +21,13 @@ public class ProductDto implements Serializable {
 	private int del; //0일반, 1삭제
 	private String tname; //PRODUCT로 고정
 	
+	private int ppoint; //평점 담을 변수. 아직 db에는 안넣었다.
+	private int hcount;
+	
 	public ProductDto() {}
 
 	public ProductDto(int product_seq, String id, String title, String subtitle, String content, int pcount, int price,
-			String place, String thumbNail, int fseq, String wdate, int del, String tname) {
+			String place, String thumbNail, int fseq, String wdate, int del, String tname, int ppoint, int hcount) {
 		super();
 		this.product_seq = product_seq;
 		this.id = id;
@@ -39,6 +42,8 @@ public class ProductDto implements Serializable {
 		this.wdate = wdate;
 		this.del = del;
 		this.tname = tname;
+		this.ppoint = ppoint;
+		this.hcount = hcount;
 	}
 
 	public int getProduct_seq() {
@@ -145,11 +150,27 @@ public class ProductDto implements Serializable {
 		this.tname = tname;
 	}
 
+	public int getPpoint() {
+		return ppoint;
+	}
+
+	public void setPpoint(int ppoint) {
+		this.ppoint = ppoint;
+	}
+
+	public int getHcount() {
+		return hcount;
+	}
+
+	public void setHcount(int hcount) {
+		this.hcount = hcount;
+	}
+
 	@Override
 	public String toString() {
 		return "ProductDto [product_seq=" + product_seq + ", id=" + id + ", title=" + title + ", subtitle=" + subtitle
 				+ ", content=" + content + ", pcount=" + pcount + ", price=" + price + ", place=" + place
 				+ ", thumbNail=" + thumbNail + ", fseq=" + fseq + ", wdate=" + wdate + ", del=" + del + ", tname="
-				+ tname + "]";
+				+ tname + ", ppoint=" + ppoint + ", hcount=" + hcount + "]";
 	}
 }

@@ -473,6 +473,7 @@ public class LalaProductController {
 		//System.out.println("con login: " + login.toString());
 		
 		List<OrderedDto> selllist = lalaProductService.getSellList(login.getId());
+		System.out.println("selllist dto[0]: " + selllist.get(0).toString());
 		model.addAttribute("selllist", selllist);
 		
 		return "selllist.tiles";
@@ -504,12 +505,13 @@ public class LalaProductController {
 	
 	//상품평 입력창으로 이동
 	@RequestMapping(value="insertGoods.do", method=RequestMethod.GET)
-	public String insertGoods(int product_seq, Model model) {
-		logger.info("LalaProductController deleteCart " + new Date());
+	public String insertGoods(int cart_seq, int product_seq, Model model) {
+		logger.info("LalaProductController insertGoods " + new Date());
 		
 		ProductDto dto = lalaProductService.productDetail(product_seq);
 		model.addAttribute("product", dto);
-		
+		model.addAttribute("cart_seq", cart_seq);
+		System.out.println("con insertgoods cartseq: " + cart_seq);
 		return "insertgoods.tiles";
 	}
 	
@@ -518,8 +520,18 @@ public class LalaProductController {
 	public String insertGoodsAf(GoodsDto dto) {
 		logger.info("LalaProductController insertGoodsAf " + new Date());
 		
-		System.out.println("con iga dto: " + dto.toString());
-		boolean isS = lalaProductService.insertGoodsAf(dto);
+		//System.out.println("con iga dto: " + dto.toString());
+		//상품평 입력하고 dto에 해당 seq를 등록
+		int goods_seq = lalaProductService.insertGoodsAf(dto);
+		dto.setGoods_seq(goods_seq);
+		System.out.println("1번끝난 dto: " + dto.toString());
+		
+		//해당 상품평의 제품디테일을 불러와서 총점과 사람수 반영해서 제품정보 수정
+		ProductDto pdto = lalaProductService.productDetail(dto.getGpseq());
+		pdto.setPpoint( pdto.getPpoint() + dto.getGpoint() );
+		pdto.setHcount( pdto.getHcount()+1 );
+		
+		lalaProductService.updateProductPH(pdto);
 		
 		return "redirect:/productdetail.do?product_seq="+dto.getGpseq();
 	}

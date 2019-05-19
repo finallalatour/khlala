@@ -183,16 +183,29 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	}
 
 	@Override
-	public boolean insertGoodsAf(GoodsDto dto) {
+	public int insertGoodsAf(GoodsDto dto) {
 		// 상품평 입력
-		int n = sqlSession.insert(ns+"insertGoodsAf", dto);
-		return n>0? true:false;
+		int goods_seq = sqlSession.insert(ns+"insertGoodsAf", dto);
+		return goods_seq;
 	}
 
 	@Override
 	public List<GoodsDto> getGoodsList(int gpseq) {
 		// 상품평목록
 		return sqlSession.selectList(ns+"getGoodsList", gpseq);
+	}
+
+	@Override
+	public boolean updateCartGseq(GoodsDto dto) {
+		// T상품평 입력시 cart의 gseq변경
+		int n = sqlSession.update(ns+"updateCartGseq", dto);
+		return n>0? true:false;
+	}
+
+	@Override
+	public void updateProductPH(ProductDto pdto) {
+		// TODO 상품평 입력시 해당제품 총별점,사람수 변경
+		int n = sqlSession.update(ns+"updateProductPH", pdto);
 	}
 	
 	

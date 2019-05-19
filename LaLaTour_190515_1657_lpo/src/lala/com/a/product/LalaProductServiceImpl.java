@@ -167,7 +167,7 @@ public class LalaProductServiceImpl implements LalaProductService {
 	}
 
 	@Override
-	public boolean insertGoodsAf(GoodsDto dto) {
+	public int insertGoodsAf(GoodsDto dto) {
 		// 상품평 입력
 		return lalaProductDao.insertGoodsAf(dto);
 	}
@@ -176,6 +176,18 @@ public class LalaProductServiceImpl implements LalaProductService {
 	public List<GoodsDto> getGoodsList(int gpseq) {
 		// 상품평목록
 		return lalaProductDao.getGoodsList(gpseq);
+	}
+
+	@Override
+	public boolean updateCartGseq(GoodsDto dto) {
+		// 상품평 입력시 cart의 gseq변경
+		return lalaProductDao.updateCartGseq(dto);
+	}
+
+	@Override
+	public void updateProductPH(ProductDto pdto) {
+		// TODO 상품평 입력시 해당제품 총별점,사람수 변경
+		lalaProductDao.updateProductPH(pdto);
 	}
 }
 

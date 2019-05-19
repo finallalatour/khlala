@@ -32,7 +32,8 @@
 	 </bean>
 		<context:component-scan base-package="lala.com.a"/>
 		
-		<mvc:resources location="/css/" mapping="/css/**"/>
+		<!-- <mvc:resources location="/css/" mapping="/css/**"/> -->
+		<mvc:resources location="/resources/" mapping="/resources/**" />
 
 		<!-- 주석문의 사용 허가 -->
 		<mvc:annotation-driven/>
