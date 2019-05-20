@@ -94,12 +94,12 @@
 </table>
 </div> <!-- end topDiv -->
 
-<form id="_goodsForm" method="post">
+<form id="_goodsForm" method="post" enctype="multipart/form-data">
 <input type="hidden" name="gpseq" value="${product.product_seq}">
 <input type="hidden" name="gid" value="${login.id}">
 <input type="hidden" name="gcseq" value="${cart_seq}">
 <div id="pointDiv" style="width: 1500px; height: 150px;">
-	<div id="starleft" style="width: 200px; height: 100%; background-color: gray; float: left;">
+	<div id="starleft" style="width: 200px; height: 100%; float: left;">
 		별점선택
 	</div>
 	<div id="starRight" style="width: 1200px; height: 100%; float: left;">
@@ -120,6 +120,16 @@
 		<textarea name="gcontent" id="_gcontent" rows="10" cols="100" ></textarea>
 	</div>
 </div> <!-- end contentDiv -->
+
+<div id="fileDiv" style="width: 1500px; height: 200px;">
+	<div class="fileDivLeft" style="width: 200px; float: left;">
+		이미지 첨부<br>
+		(한 장만 첨부 가능)
+	</div>
+	<div class="fileDivRight" style="width: 1300px;">
+		<input type="file" name="fileload" id="_fileload" accept=".jpg, .jpeg, .png, .bmp, .gif">
+	</div>
+</div> <!-- end fileDiv -->
 
 <div id="btnDiv" style="width: 1500px; height: 150px;">
 	<button type="button" onclick="addBtnClick()">등록</button>
@@ -144,15 +154,6 @@ function addBtnClick() {
 	
 	$("#_goodsForm").attr("action", "insertGoodsAf.do").submit();
 }
-
-/* $(document).on("ready", function(){
-	alert("11111111111");
-	var stars = document.getElementsByName("star");
-	
-	for(var i=4; i>=0; i--) {
-		stars[i].style.color="#c0392b";
-	}
-}); */
 
 $("ion-icon[name=star]").hover(function(onmouseover) {
 	var index = Number($(this).attr("value"))-1;

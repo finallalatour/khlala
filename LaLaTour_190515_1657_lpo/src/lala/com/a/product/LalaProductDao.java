@@ -19,6 +19,7 @@ public interface LalaProductDao {
 	public boolean productWriteAf(ProductDto dto); //제품등록
 	public boolean productUpdateAf(ProductDto dto); //제품수정
 	public void uploadFile(FilePdsDto dto); //파일업로드
+	public void uploadFileGoods(FilePdsDto dto); //파일업로드 상품평에..
 	public void deleteFile(int seq); //파일삭제
 	
 	public List<ProductDto> getProductList(PagingBean pagingBean); //제품전체목록

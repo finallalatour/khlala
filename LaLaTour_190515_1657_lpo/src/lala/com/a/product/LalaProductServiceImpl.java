@@ -189,6 +189,12 @@ public class LalaProductServiceImpl implements LalaProductService {
 		// TODO 상품평 입력시 해당제품 총별점,사람수 변경
 		lalaProductDao.updateProductPH(pdto);
 	}
+
+	@Override
+	public void uploadFileGoods(FilePdsDto dto) {
+		// TODO 파일업로드 상품평에..
+		lalaProductDao.uploadFileGoods(dto);
+	}
 }
 
 

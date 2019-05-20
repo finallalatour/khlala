@@ -186,6 +186,7 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	public int insertGoodsAf(GoodsDto dto) {
 		// 상품평 입력
 		int goods_seq = sqlSession.insert(ns+"insertGoodsAf", dto);
+		System.out.println("goods_seq: " + goods_seq);
 		return goods_seq;
 	}
 
@@ -206,6 +207,12 @@ public class LalaProductDaoImpl implements LalaProductDao {
 	public void updateProductPH(ProductDto pdto) {
 		// TODO 상품평 입력시 해당제품 총별점,사람수 변경
 		int n = sqlSession.update(ns+"updateProductPH", pdto);
+	}
+
+	@Override
+	public void uploadFileGoods(FilePdsDto dto) {
+		// 파일업로드 상품평에..
+		sqlSession.insert(ns+"uploadFileGoods", dto);
 	}
 	
 	

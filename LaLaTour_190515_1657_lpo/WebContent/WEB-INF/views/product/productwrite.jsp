@@ -37,7 +37,7 @@
 <tr>
 	<th>썸네일</th>
 	<td>
-		<input type="file" name="filethumbnail" accept=".jpg, .jpeg, .png, .bmp, .gif, .jfif">
+		<input type="file" name="filethumbnail" accept=".jpg, .jpeg, .png, .bmp, .gif">
 	</td>
 </tr>
 <tr>

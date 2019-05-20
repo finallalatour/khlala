@@ -2,7 +2,9 @@ package lala.com.a.model;
 
 import java.io.Serializable;
 
-public class GoodsDto implements Serializable {
+import lala.com.a.product.FilePdsDto;
+
+public class GoodsDto extends FilePdsDto implements Serializable {
 
 	private int goods_seq;
 	private int gpseq; //해당제품 기본키 (product)
@@ -12,11 +14,12 @@ public class GoodsDto implements Serializable {
 	private int gpoint; //별점 (1~5)
 	private String gdate; //작성일
 	private String gtname; //이 테이블 이름으로 하자 GOODS
+	private String pictures; //첨부파일명
 	
 	public GoodsDto() {}
 
 	public GoodsDto(int goods_seq, int gpseq, int gcseq, String gid, String gcontent, int gpoint, String gdate,
-			String gtname) {
+			String gtname, String pictures) {
 		super();
 		this.goods_seq = goods_seq;
 		this.gpseq = gpseq;
@@ -26,6 +29,7 @@ public class GoodsDto implements Serializable {
 		this.gpoint = gpoint;
 		this.gdate = gdate;
 		this.gtname = gtname;
+		this.pictures = pictures;
 	}
 
 	public int getGoods_seq() {
@@ -92,9 +96,18 @@ public class GoodsDto implements Serializable {
 		this.gtname = gtname;
 	}
 
+	public String getPictures() {
+		return pictures;
+	}
+
+	public void setPictures(String pictures) {
+		this.pictures = pictures;
+	}
+
 	@Override
 	public String toString() {
 		return "GoodsDto [goods_seq=" + goods_seq + ", gpseq=" + gpseq + ", gcseq=" + gcseq + ", gid=" + gid
-				+ ", gcontent=" + gcontent + ", gpoint=" + gpoint + ", gdate=" + gdate + ", gtname=" + gtname + "]";
+				+ ", gcontent=" + gcontent + ", gpoint=" + gpoint + ", gdate=" + gdate + ", gtname=" + gtname
+				+ ", pictures=" + pictures + "]";
 	}
 }

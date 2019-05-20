@@ -166,6 +166,7 @@ public class LalaProductController {
 				FilePdsDto dto = new FilePdsDto();
 				dto.setFileNameBf(filename);
 				dto.setFileNameAf(newfilename);
+				dto.setTname("PRODUCT");
 				lalaProductService.uploadFile(dto);
 				//khPdsService.uploadFileMulti(dto);
 				
@@ -517,14 +518,20 @@ public class LalaProductController {
 	
 	//상품평 입력작업 후 해당 제품페이지로 이동
 	@RequestMapping(value="insertGoodsAf.do", method=RequestMethod.POST)
-	public String insertGoodsAf(GoodsDto dto) {
+	public String insertGoodsAf(
+			GoodsDto dto,
+			@RequestParam(value="fileload",required=false)MultipartFile fileload,
+			HttpServletRequest req) {
 		logger.info("LalaProductController insertGoodsAf " + new Date());
 		
 		//System.out.println("con iga dto: " + dto.toString());
 		//상품평 입력하고 dto에 해당 seq를 등록
+		dto.setPictures(fileload.getOriginalFilename());
 		int goods_seq = lalaProductService.insertGoodsAf(dto);
 		dto.setGoods_seq(goods_seq);
-		System.out.println("1번끝난 dto: " + dto.toString());
+		
+		System.out.println("업데잍트cartgseq전: " + dto.toString());
+		lalaProductService.updateCartGseq(dto);
 		
 		//해당 상품평의 제품디테일을 불러와서 총점과 사람수 반영해서 제품정보 수정
 		ProductDto pdto = lalaProductService.productDetail(dto.getGpseq());
@@ -533,10 +540,23 @@ public class LalaProductController {
 		
 		lalaProductService.updateProductPH(pdto);
 		
+		//파일 시작
+		//upload 경로 (톰캣)
+		String fupload = req.getServletContext().getRealPath("/upload");
+		
+		File file = new File(fupload+"/"+fileload.getOriginalFilename());
+		
+		try {
+			FileUtils.writeByteArrayToFile(file, fileload.getBytes());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return "redirect:/productdetail.do?product_seq="+dto.getGpseq();
 	}
 }
-
 
 
 

@@ -24,6 +24,25 @@
 table, tr, td, th {
 	border: 1px solid black;
 }
+.menuThree {
+	width: 33.333%; 
+	float: left; 
+	background-color: black;
+}
+.star-rating {
+	width: 205px;
+}
+.star-rating, .star-rating span {
+	display: inline-block;
+	height: 39px;
+	overflow: hidden;
+	background: url("<%=request.getContextPath()%>/resources/images/star.png") no-repeat;
+}
+.star-rating span {
+	background-position: left bottom;
+	line-height: 0;
+	vertical-align: top;
+}
 </style> 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -66,7 +85,14 @@ table, tr, td, th {
 
 <div id="div_detail_wrap" style="width: 800px; height: 550px; float:right;">
 	<div id="div_detail_top">
-		<div><h2>${product.title}</h2></div>
+		<div>
+			<div class="subtitle">
+				<font style="font-size: 40px;">${product.title}</font>
+			</div> <!-- end subtitle -->
+			<span class="star-rating">
+				<span id="_percent"></span>
+			</span>
+		</div>
 		<table>
 		<colgroup>
 			<col width="180px"><col width="580px">
@@ -102,7 +128,7 @@ table, tr, td, th {
 		</tr>				
 		</table>
 	</div> <!-- end div_detail_top -->
-	
+	<br><br>
 	<div id="div_detail_cart">
 		<div id="div_detail_cart_count">
 			<div style="display: inline-block;">
@@ -117,6 +143,7 @@ table, tr, td, th {
 			<div style="display: inline-block;">
 				합계 <span class="total" style="font-size: 25px; color: orange;"></span>
 			</div>
+			<br><br>
 			<div>
 				<c:if test="${login.auth eq '1'}">
 					<button type="button" class="btn btn-primary btn-lg" id="_productUpdateBtn" onclick="location.href='productUpdate.do?product_seq=${product.product_seq}'">수정하기</button>
@@ -141,15 +168,15 @@ table, tr, td, th {
 </div> <!-- end div_detail_top -->
 
 <!-- 고정메뉴 바 /////////////////////////////////////////////// -->
-<div id="div_middleMenu_wrap" class="jbMenu" style="width: 1500px; display:block;">
-	<div style="width: 33%; float: left;">
-		<a href="#detail">상품상세정보</a>
+<div id="div_middleMenu_wrap" class="jbMenu" style="width: 1500px; display:block;s">
+	<div class="menuThree">
+		<a href="#detail" style="color: white;">상품상세정보</a>
 	</div>
-	<div style="width: 34%; float: left;">
-		<a href="#goods">고객상품평</a>
+	<div class="menuThree">
+		<a href="#goods" style="color: white;">고객상품평</a>
 	</div>
-	<div style="width: 33%; float: left;">
-		<a href="#refund">교환 및 반품 안내</a>
+	<div class="menuThree">
+		<a href="#refund" style="color: white;">교환 및 반품 안내</a>
 	</div>
 </div> <!-- end div_middleMenu_wrap -->
 
@@ -165,7 +192,13 @@ table, tr, td, th {
 <!-- 고객상품평 /////////////////////////////////////////////// -->
 <div class="div_goods_wrap" id="goods" style="width: 1500px; display: inline-block; padding: 50px;">
 <div class="subtitle">
-	<font style="font-size: 40px;">고객상품평<fmt:formatNumber value="${product.ppoint/product.hcount}" pattern=".00"/>(${product.hcount})</font>&nbsp;&nbsp;&nbsp;
+	<font style="font-size: 40px;">고객상품평
+		<c:if test="${product.hcount eq '0'}">0</c:if>
+		<c:if test="${product.hcount > '0'}">
+			<fmt:formatNumber value="${product.ppoint/product.hcount}" pattern=".00"/>
+		</c:if>
+		(${product.hcount})
+	</font>&nbsp;&nbsp;&nbsp;
 	<c:if test="${login.auth eq '0'}">
 		<button type="button" class="btn btn-outline-primary btn-lg" onclick="goodsWriteClick()">상품평쓰기</button>
 	</c:if>
@@ -174,7 +207,7 @@ table, tr, td, th {
 <c:if test="${goodsList.size() eq '0'}">
 	등록된 상품평이 없습니다
 </c:if>
-<c:if test="${goodsList.size() > '1' }">
+<c:if test="${goodsList.size() > '0' }">
 	<table border="1">
 	<colgroup>
 		<col width="300px"><col width="600px"><col width="300px"><col width="300px">
@@ -190,7 +223,10 @@ table, tr, td, th {
 			</c:forEach>
 			(${goods.gpoint})
 		</td>
-		<td>${goods.gcontent}</td>
+		<td>
+			<font onclick="clickGoods(${goods.goods_seq}, '${goods.pictures}')">${goods.gcontent}</font>
+			<div id="pic${goods.goods_seq}"></div>
+		</td>
 		<td>${goods.gid}</td>
 		<td>${fn:substring(goods.gdate,0,10)}</td>
 	</tr>
@@ -204,6 +240,7 @@ table, tr, td, th {
 	<div class="subtitle">
 		<font style="font-size: 40px;">교환 및 반품 안내</font>
 	</div> <!-- end subtitle -->
+	<br>
 	<div>
 		<table>
 		<colgroup>
@@ -338,6 +375,12 @@ $(document).ready(function() {
 			$(".jbMenu").removeClass("jbFixed");
 		}
 	});
+	
+	var percent = 0;
+	if(${product.hcount}!=0) {
+		var percent = (${product.ppoint}/${product.hcount})*100/5;
+	}
+	$("#_percent").css("width", percent+"%");
 });
 
 $(document).on("click", "#mBtn", function() {
@@ -451,6 +494,20 @@ function goodsWriteClick() {
 	location.href="sellList.do";
 }
 
+function clickGoods(goods_seq, pictures) {
+	//alert($("#goods"+${goods.goods_seq}).attr("values"));
+	//$("#pic"+goods_seq).append("123123");
+	$("#pic"+goods_seq).empty();
+	if(pictures!='') {
+		var tags = "<img alt='' src='<%=request.getContextPath()%>/upload/" + pictures + "' style='width:250px; height:250px;'> <button type='button' onclick='clears("+goods_seq+")'>닫기</button>";
+		$("#pic"+goods_seq).append(tags);
+	}
+}
+
+function clears(goods_seq) {
+	$("#pic"+goods_seq).empty();
+}
+
 /* 
 function insertReply() {
 	if($("#_content").val().trim()=="" || $("#_content").val().trim().length==0) {
@@ -470,8 +527,7 @@ function updateView(seq) {
 	
 	$("#replyListForm").attr("action")
 } 
-*/
-
+ */
 </script>
 
 </body>

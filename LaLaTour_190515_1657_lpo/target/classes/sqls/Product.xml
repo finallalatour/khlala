@@ -51,6 +51,14 @@ VALUES(
 	SEQ_FILEPDS.NEXTVAL,(SELECT MAX(PRODUCT_SEQ) FROM PRODUCT), #{fileNameBf}, #{fileNameAf}, 'PRODUCT')	
 </insert>
 
+<!-- 파일업로드(상품평) -->
+<insert id="uploadFileGoods" parameterType="lala.com.a.product.FilePdsDto">
+INSERT INTO FILEPDS(
+	SEQ,PSEQ,FILENAMEBF,FILENAMEAF,TNAME)
+VALUES(
+	SEQ_FILEPDS.NEXTVAL,(SELECT MAX(GOODS_SEQ) FROM GOODS), #{fileNameBf}, #{fileNameAf}, #{tname})	
+</insert>
+
 <!-- 파일삭제 -->
 <delete id="deleteFile" parameterType="java.lang.Integer">
 DELETE FROM FILEPDS
@@ -157,7 +165,7 @@ WHERE CART_SEQ=#{cart_seq}
 
 <!-- 주문하면 하나씩 가져오기 -->
 <select id="getCart" parameterType="java.lang.Integer" resultType="lala.com.a.model.CartDto">
-SELECT C.CART_SEQ,C.ID,C.PSEQ,C,GSEQ,C.MYCOUNT,OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME,PPOINT,HCOUNT
+SELECT C.CART_SEQ,C.ID,C.PSEQ,C.GSEQ,C.MYCOUNT,OSEQ,TITLE,CONTENT,THUMBNAIL,PCOUNT,WDATE,P.DEL,FSEQ,PLACE,PRICE,TNAME,PPOINT,HCOUNT
 FROM CART C, PRODUCT P
 WHERE C.PSEQ = P.PRODUCT_SEQ
 AND C.CART_SEQ = #{cart_seq}
@@ -253,10 +261,10 @@ AND O.OMID=#{omid}
 	</selectKey>
 INSERT INTO GOODS(
 	GOODS_SEQ,GPSEQ,GCSEQ,GID,GCONTENT,
-	GPOINT,GDATE,GTNAME)
+	GPOINT,GDATE,GTNAME,PICTURES)
 VALUES(
 	SEQ_GOODS.CURRVAL,#{gpseq},#{gcseq},#{gid},#{gcontent},
-	#{gpoint},SYSDATE,'GOODS')	
+	#{gpoint},SYSDATE,'GOODS',#{pictures})	
 </insert>
 
 <!-- 상품평 등록할 때 해당 카트의 gseq를 변경해주기 -->
@@ -268,8 +276,8 @@ WHERE CART_SEQ=#{gcseq}
 
 <!-- 제품 상품평 목록 -->
 <select id="getGoodsList" parameterType="java.lang.Integer" resultType="lala.com.a.model.GoodsDto">
-SELECT *
-FROM GOODS
+SELECT G.GOODS_SEQ,G.GPSEQ,G.GCSEQ,G.GID,G.GCONTENT,G.GPOINT,G.GDATE,G.GTNAME,G.PICTURES
+FROM GOODS G
 WHERE GPSEQ=#{gpseq}
 ORDER BY GDATE DESC
 </select>

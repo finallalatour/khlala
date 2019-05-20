@@ -55,7 +55,7 @@ String str = request.getServletContext().getRealPath("/upload");
 
 </c:forEach>
 
-</table>
+</table><br>
 
 <!-- 페이징 ////////////////////// -->
 <div class="pgdiv" id="pgdiv">
